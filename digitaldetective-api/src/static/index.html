@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Detective - O Mistério da Mansão Blackwood</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/windows98.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/icons.css">
+</head>
+<body>
+    <!-- Desktop Background -->
+    <div id="desktop">
+        <!-- Desktop Icons -->
+        <div class="desktop-icons">
+            <div class="desktop-icon" data-app="email">
+                <img src="assets/icons/email.png" alt="E-mail">
+                <span>E-mail</span>
+            </div>
+            <div class="desktop-icon" data-app="chat">
+                <img src="assets/icons/chat.png" alt="Chat">
+                <span>Chat</span>
+            </div>
+            <div class="desktop-icon" data-app="news">
+                <img src="assets/icons/news.png" alt="Notícias">
+                <span>Notícias</span>
+            </div>
+            <div class="desktop-icon" data-app="notes">
+                <img src="assets/icons/notepad.png" alt="Notas">
+                <span>Notas</span>
+            </div>
+            <div class="desktop-icon" data-app="investigation">
+                <img src="assets/icons/search.png" alt="Investigação">
+                <span>Investigação</span>
+            </div>
+            <div class="desktop-icon" data-app="minesweeper">
+                <img src="assets/icons/minesweeper.png" alt="Minesweeper">
+                <span>Minesweeper</span>
+            </div>
+        </div>
+
+        <!-- Windows -->
+        <div id="windows-container"></div>
+
+        <!-- Taskbar -->
+        <div id="taskbar">
+            <button id="start-button" class="start-button">
+                Iniciar
+            </button>
+            <div id="taskbar-buttons"></div>
+            <div id="system-tray">
+                <span id="clock">11:11 PM</span>
+            </div>
+        </div>
+
+        <!-- Start Menu -->
+        <div id="start-menu" class="start-menu hidden">
+            <div class="start-menu-header">
+                <img src="assets/logo.png" alt="Digital Detective">
+                <span>Digital Detective</span>
+            </div>
+            <div class="start-menu-items">
+                <div class="start-menu-item" data-app="email">
+                    <img src="assets/icons/email.png" alt="E-mail">
+                    <span>Sistema de E-mails</span>
+                </div>
+                <div class="start-menu-item" data-app="chat">
+                    <img src="assets/icons/chat.png" alt="Chat">
+                    <span>Chat com Assistente</span>
+                </div>
+                <div class="start-menu-item" data-app="news">
+                    <img src="assets/icons/news.png" alt="Notícias">
+                    <span>Notícias</span>
+                </div>
+                <div class="start-menu-item" data-app="notes">
+                    <img src="assets/icons/notepad.png" alt="Notas">
+                    <span>Bloco de Notas</span>
+                </div>
+                <div class="start-menu-item" data-app="investigation">
+                    <img src="assets/icons/search.png" alt="Investigação">
+                    <span>Investigação</span>
+                </div>
+                <div class="start-menu-separator"></div>
+                <div class="start-menu-item" data-app="minesweeper">
+                    <img src="assets/icons/minesweeper.png" alt="Minesweeper">
+                    <span> Minesweeper</span>
+                </div>
+                <div class="start-menu-separator"></div>
+                <div class="start-menu-item" data-action="about">
+                    <img src="assets/icons/about.png" alt="Sobre">
+                    <span>Sobre o Jogo</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Setup Modal -->
+        <div id="game-setup-modal" class="modal">
+            <div class="window">
+                <div class="window-header">
+                    <span class="window-title">Novo Jogo - Digital Detective</span>
+                    <button class="window-close" data-action="close-setup">&times;</button>
+                </div>
+                <div class="window-content">
+                    <h2>O Mistério da Mansão Blackwood</h2>
+                    <p>Escolha seu assistente para esta investigação:</p>
+                    
+                    <div class="assistant-selection">
+                        <div class="assistant-card" data-assistant="1">
+                            <img src="assets/assistants/rico.png" alt="Rico Belmont">
+                            <h3>Rico Belmont</h3>
+                            <p>Herdeiro preguiçoso, mas com conexões de alto nível</p>
+                            <div class="assistant-abilities">
+                                <strong>Habilidade:</strong> Suborna autoridades por informações<br>
+                                <strong>Desvantagem:</strong> Policiais não cooperam
+                            </div>
+                        </div>
+                        
+                        <div class="assistant-card" data-assistant="2">
+                            <img src="assets/assistants/clara.png" alt="Clara Maia">
+                            <h3>Clara Maia</h3>
+                            <p>Mãe dedicada, com um olhar humano sobre o caso</p>
+                            <div class="assistant-abilities">
+                                <strong>Habilidade:</strong> Consegue empatia da viúva<br>
+                                <strong>Desvantagem:</strong> Pistas podem atrasar por imprevistos
+                            </div>
+                        </div>
+                        
+                        <div class="assistant-card" data-assistant="3">
+                            <img src="assets/assistants/barbara.png" alt="Bárbara Hacker">
+                            <h3>Bárbara "Hacker"</h3>
+                            <p>Ex-criminosa que sabe fuçar onde não deve</p>
+                            <div class="assistant-abilities">
+                                <strong>Habilidade:</strong> Acessa e-mails apagados<br>
+                                <strong>Desvantagem:</strong> Atrai atenção da polícia
+                            </div>
+                        </div>
+                        
+                        <div class="assistant-card" data-assistant="4">
+                            <img src="assets/assistants/lurdes.png" alt="Dona Lurdes">
+                            <h3>Dona Lurdes</h3>
+                            <p>Fofoqueira que sabe tudo sobre a cidade</p>
+                            <div class="assistant-abilities">
+                                <strong>Habilidade:</strong> Descobre fofocas cruciais<br>
+                                <strong>Desvantagem:</strong> Análise lenta de provas
+                            </div>
+                        </div>
+                        
+                        <div class="assistant-card" data-assistant="5">
+                            <img src="assets/assistants/ice.png" alt="Dra. Ice">
+                            <h3>Dra. Ice</h3>
+                            <p>Psicóloga que analisa perfis e manipula diálogos</p>
+                            <div class="assistant-abilities">
+                                <strong>Habilidade:</strong> Convence suspeitos a confessarem<br>
+                                <strong>Desvantagem:</strong> Irrita suspeitos com perguntas invasivas
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-buttons">
+                        <button id="start-game-btn" class="btn btn-primary" disabled>Iniciar Jogo</button>
+                        <button class="btn btn-secondary" data-action="close-setup">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/mock-api.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/windows.js"></script>
+    <script src="js/apps/email.js"></script>
+    <script src="js/apps/chat.js"></script>
+    <script src="js/apps/news.js"></script>
+    <script src="js/apps/notes.js"></script>
+    <script src="js/apps/investigation.js"></script>
+    <script src="js/apps/minesweeper.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
+

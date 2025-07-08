@@ -1,0 +1,27 @@
+# Ícones Placeholder
+
+Para uma implementação completa, os seguintes ícones seriam necessários:
+
+- email.png - Ícone de e-mail
+- chat.png - Ícone de chat
+- news.png - Ícone de notícias
+- notes.png - Ícone de notas
+- investigation.png - Ícone de investigação
+- minesweeper.png - Ícone do Minesweeper
+- start.png - Ícone do menu iniciar
+- about.png - Ícone sobre
+- compose.png - Ícone compor
+- reply.png - Ícone responder
+- refresh.png - Ícone atualizar
+- delete.png - Ícone excluir
+- new.png - Ícone novo
+- save.png - Ícone salvar
+- search.png - Ícone buscar
+- export.png - Ícone exportar
+- analyze.png - Ícone analisar
+- solve.png - Ícone resolver
+- print.png - Ícone imprimir
+- detective.png - Ícone do detetive
+
+Por enquanto, o CSS usa caracteres Unicode como fallback.
+

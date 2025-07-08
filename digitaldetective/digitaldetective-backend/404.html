@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Arquivo Não Encontrado | Digital Detective</title>
+    <style>
+        body {
+            margin: 0;
+            background: #191919;
+            color: #F5F3F6;
+            font-family: 'Times New Roman', serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .error-container {
+            text-align: center;
+            padding: 40px;
+            border: 2px solid #FD0100;
+            background: rgba(0, 0, 0, 0.8);
+            max-width: 600px;
+        }
+        .error-code {
+            font-size: 4rem;
+            color: #FD0100;
+            margin-bottom: 2rem;
+        }
+        .error-title {
+            font-size: 1.5rem;
+            color: #ffffff;
+            margin-bottom: 2rem;
+        }
+        .error-message {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            opacity: 0.8;
+        }
+        .error-details {
+            background: rgba(253, 1, 0, 0.1);
+            border: 1px solid #FD0100;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        .btn-home {
+            background: transparent;
+            color: #F5F3F6;
+            border: 2px solid #FD0100;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+        .btn-home:hover {
+            background: rgba(253, 1, 0, 0.1);
+        }
+        .investigation-note {
+            margin-top: 30px;
+            padding: 20px;
+            border-left: 4px solid #FFC3B8;
+            background: rgba(255, 195, 184, 0.1);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-code">404</div>
+        <h1 class="error-title">ARQUIVO CORROMPIDO</h1>
+        <p class="error-message">
+            O arquivo que você está procurando foi perdido durante a investigação ou pode ter sido deletado por um dos suspeitos.
+        </p>
+        
+        <div class="error-details">
+            <strong>RELATÓRIO DE ERRO:</strong><br>
+            Status: ARQUIVO_NAO_ENCONTRADO<br>
+            Localização: SERVIDOR_MANSAO_BLACKWOOD<br>
+            Última modificação: DESCONHECIDA<br>
+            Suspeita: SABOTAGEM_INTERNA
+        </div>
+        
+        <div class="investigation-note">
+            <strong>NOTA DO DETETIVE:</strong> Este erro pode ser uma pista importante. Alguém não quer que você encontre certas informações. Continue investigando através dos canais oficiais.
+        </div>
+        
+        <a href="/" class="btn-home">VOLTAR À INVESTIGAÇÃO</a>
+        <a href="../index.html" class="btn-home">CONTINUAR CASO</a>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,553 @@
+/* Digital Detective - Game Components */
+
+/* Email Client */
+.email-client {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.email-toolbar {
+    background: var(--color-background);
+    border-bottom: 1px solid var(--color-scroll);
+    padding: 4px;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.email-layout {
+    flex: 1;
+    display: flex;
+    height: calc(100% - 40px);
+}
+
+.email-list {
+    width: 250px;
+    border-right: 1px solid var(--color-scroll);
+    background: white;
+    overflow-y: auto;
+}
+
+.email-item {
+    padding: 8px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.email-item:hover {
+    background: #f0f0f0;
+}
+
+.email-item.selected {
+    background: #0000ff;
+    color: white;
+}
+
+.email-item.unread {
+    font-weight: bold;
+}
+
+.email-sender {
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.email-subject {
+    margin-bottom: 2px;
+}
+
+.email-time {
+    font-size: 9px;
+    color: #666;
+}
+
+.email-content {
+    flex: 1;
+    padding: 8px;
+    background: white;
+    overflow-y: auto;
+}
+
+.email-header {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+}
+
+.email-body {
+    line-height: 1.4;
+    white-space: pre-wrap;
+}
+
+.compose-email {
+    padding: 8px;
+    background: white;
+}
+
+.compose-field {
+    margin-bottom: 8px;
+}
+
+.compose-field label {
+    display: inline-block;
+    width: 60px;
+    font-weight: bold;
+}
+
+.compose-field input, .compose-field textarea {
+    width: calc(100% - 70px);
+}
+
+/* Chat Interface */
+.chat-interface {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    background: var(--color-background);
+    border-bottom: 1px solid var(--color-scroll);
+    padding: 8px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.assistant-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 2px;
+}
+
+.chat-messages {
+    flex: 1;
+    background: white;
+    padding: 8px;
+    overflow-y: auto;
+    font-size: 11px;
+}
+
+.chat-message {
+    margin-bottom: 12px;
+    display: flex;
+    gap: 8px;
+}
+
+.message-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.message-content {
+    flex: 1;
+}
+
+.message-sender {
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.message-text {
+    line-height: 1.4;
+}
+
+.message-time {
+    font-size: 9px;
+    color: #666;
+    margin-top: 2px;
+}
+
+.chat-input {
+    background: var(--color-background);
+    border-top: 1px solid var(--color-scroll);
+    padding: 8px;
+    display: flex;
+    gap: 4px;
+}
+
+.chat-input input {
+    flex: 1;
+}
+
+/* News Reader */
+.news-reader {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.news-header {
+    background: var(--color-background);
+    border-bottom: 1px solid var(--color-scroll);
+    padding: 8px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.news-list {
+    flex: 1;
+    background: white;
+    overflow-y: auto;
+}
+
+.news-item {
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+}
+
+.news-item:hover {
+    background: #f8f8f8;
+}
+
+.news-headline {
+    font-weight: bold;
+    font-size: 12px;
+    margin-bottom: 4px;
+    color: var(--color-janelas);
+}
+
+.news-content {
+    font-size: 11px;
+    line-height: 1.4;
+    margin-bottom: 4px;
+}
+
+.news-meta {
+    font-size: 9px;
+    color: #666;
+    display: flex;
+    justify-content: space-between;
+}
+
+.news-priority {
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-size: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.news-priority.urgent {
+    background: var(--color-accents);
+    color: white;
+}
+
+.news-priority.high {
+    background: #ff9800;
+    color: white;
+}
+
+.news-priority.medium {
+    background: #2196f3;
+    color: white;
+}
+
+/* Notes Editor */
+.notes-editor {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.notes-toolbar {
+    background: var(--color-background);
+    border-bottom: 1px solid var(--color-scroll);
+    padding: 4px;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.notes-list {
+    width: 200px;
+    border-right: 1px solid var(--color-scroll);
+    background: white;
+    overflow-y: auto;
+}
+
+.note-item {
+    padding: 8px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.note-item:hover {
+    background: #f0f0f0;
+}
+
+.note-item.selected {
+    background: #0000ff;
+    color: white;
+}
+
+.note-title {
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.note-preview {
+    font-size: 9px;
+    color: #666;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.note-editor {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: white;
+}
+
+.note-title-input {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    padding: 8px;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.note-content-input {
+    flex: 1;
+    border: none;
+    padding: 8px;
+    font-family: var(--font-primary);
+    font-size: 11px;
+    resize: none;
+}
+
+/* Investigation Panel */
+.investigation-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.investigation-tabs {
+    background: var(--color-background);
+    border-bottom: 1px solid var(--color-scroll);
+    display: flex;
+}
+
+.investigation-tab {
+    padding: 8px 16px;
+    cursor: pointer;
+    border-right: 1px solid var(--color-scroll);
+    font-size: 11px;
+}
+
+.investigation-tab.active {
+    background: white;
+    border-bottom: 1px solid white;
+}
+
+.investigation-content {
+    flex: 1;
+    background: white;
+    overflow-y: auto;
+}
+
+.clue-item, .weapon-item {
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+}
+
+.clue-item:hover, .weapon-item:hover {
+    background: #f8f8f8;
+}
+
+.item-name {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.item-description {
+    font-size: 10px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.item-location {
+    font-size: 9px;
+    color: #999;
+}
+
+.analysis-result {
+    background: #fffacd;
+    border: 1px solid #ddd;
+    padding: 8px;
+    margin: 8px;
+    border-radius: 2px;
+}
+
+.analysis-title {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.analysis-text {
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+/* Minesweeper */
+.minesweeper-game {
+    display: grid;
+    background: var(--color-background);
+    
+}
+
+.minesweeper-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 4px 8px;
+    background: var(--color-background);
+    border: 2px inset var(--color-background);
+}
+
+.mine-counter, .timer {
+    background: black;
+    color: #ff0000;
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 2px 4px;
+    border: 1px inset var(--color-background);
+    min-width: 40px;
+    text-align: center;
+}
+
+.smiley-button {
+    width: 32px;
+    height: 32px;
+    background: var(--color-background);
+    border: 2px outset var(--color-background);
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.smiley-button:active {
+    border: 2px inset var(--color-background);
+}
+
+.minefield {
+    border: 2px inset var(--color-background);
+    display: grid;
+    background: var(--color-background);
+    grid-template-columns: repeat(auto-fill, minmax(20px, 1fr));
+    gap: 1px;
+    padding: 1px;
+    width: fit-content;
+    margin: 0 auto;
+    user-select: none;
+}
+
+.mine-row {
+    display: flex;
+}
+
+.mine-cell {
+    width: 20px;
+    height: 20px;
+    border: 1px outset var(--color-background);
+    background: var(--color-background);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+    user-select: none;
+}
+
+.mine-cell.revealed {
+    border: 1px solid #808080;
+    background: #c0c0c0;
+}
+
+.mine-cell.flagged {
+    background: var(--color-background);
+    color: red;
+}
+
+.mine-cell.mine {
+    background: red;
+    color: black;
+}
+
+.mine-cell.number-1 { color: blue; }
+.mine-cell.number-2 { color: green; }
+.mine-cell.number-3 { color: red; }
+.mine-cell.number-4 { color: purple; }
+.mine-cell.number-5 { color: maroon; }
+.mine-cell.number-6 { color: turquoise; }
+.mine-cell.number-7 { color: black; }
+.mine-cell.number-8 { color: gray; }
+
+/* Loading Spinner */
+.loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--color-scroll);
+    border-radius: 50%;
+    border-top-color: var(--color-accents);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Notification */
+.notification {
+    position: fixed;
+    bottom: 60px;
+    right: 20px;
+    background: #ffffcc;
+    border: 2px outset var(--color-background);
+    padding: 8px 12px;
+    font-size: 11px;
+    max-width: 300px;
+    z-index: 1500;
+    animation: slide-in 0.3s ease-out;
+}
+
+@keyframes slide-in {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.notification.success {
+    background: #ccffcc;
+}
+
+.notification.error {
+    background: #ffcccc;
+}
+
+.notification.info {
+    background: #ccccff;
+}
+

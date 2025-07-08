@@ -1,0 +1,13 @@
+# Imagens dos Assistentes
+
+Para uma implementação completa, as seguintes imagens seriam necessárias:
+
+- rico_belmont.png - Rico Belmont (Detetive experiente)
+- clara_maia.png - Clara Maia (Investigadora forense)
+- barbara_hacker.png - Barbara Hacker (Especialista em tecnologia)
+- dona_lurdes.png - Dona Lurdes (Governanta da mansão)
+- dra_ice.png - Dra. Ice (Médica legista)
+- default.png - Imagem padrão
+
+Por enquanto, o sistema usa ícones Unicode como fallback.
+

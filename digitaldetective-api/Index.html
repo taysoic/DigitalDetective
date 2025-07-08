@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Detective | O Mistério da Mansão Blackwood</title>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ui-dark: #191919;
+            --glitch-red: #FD0100;
+            --pink-highlight: #FFC3B8;
+            --text-offwhite: #F5F3F6;
+            --white: #ffffff;
+        }
+        
+        body {
+            margin: 0;
+            background: var(--ui-dark);
+            color: var(--text-offwhite);
+            font-family: 'Times New Roman', serif;
+            overflow-x: hidden;
+            position: relative;
+            font-size: 18px;
+            line-height: 1.8;
+        }
+        
+        .crt-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0.1) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 100;
+            pointer-events: none;
+            animation: flicker 0.15s infinite alternate;
+        }
+        
+        @keyframes flicker {
+            0% { opacity: 0.9; }
+            100% { opacity: 1; }
+        }
+        
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid var(--glitch-red);
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://c4.wallpaperflare.com/wallpaper/163/392/912/map-wold-map-technology-world-wallpaper-preview.jpg') no-repeat center center;
+            background-size: cover;
+        }
+        
+        .title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            color: var(--glitch-red);
+            text-shadow: 0 0 10px rgba(253, 1, 0, 0.5);
+            position: relative;
+        }
+        
+        .title::after {
+            content: "|";
+            animation: typing-cursor 0.7s infinite;
+        }
+        
+        @keyframes typing-cursor {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+        
+        .subtitle {
+            font-size: 1.8rem;
+            margin-bottom: 3rem;
+            opacity: 0.8;
+            max-width: 800px;
+        }
+        
+        .animation {
+            width: 400px;
+            height: 200px;
+            margin: 2rem 0;
+            filter: drop-shadow(0 0 5px var(--glitch-red));
+        }
+        
+        .btn-investigate {
+            margin-top: 40px;
+            background: transparent;
+            color: var(--text-offwhite);
+            border: 2px solid var(--glitch-red);
+            padding: 20px 50px;
+            font-size: 1.5rem;
+            font-family: 'Press Start 2P', cursive;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-investigate .btn-dots {
+            display: inline-block;
+            width: 0;
+            overflow: hidden;
+            transition: width 0.3s ease;
+        }
+
+        .btn-investigate:hover {
+            background: rgba(253, 1, 0, 0.1);
+            box-shadow: 0 0 20px rgba(253, 1, 0, 0.5);
+            animation: glitch 0.5s linear infinite;
+        }
+
+        .btn-investigate:hover .btn-dots {
+            width: 30px;
+        }
+
+        .btn-investigate:hover .btn-dots::before {
+            content: "...";
+            animation: dotsBlink 1s infinite;
+        }
+
+        .btn-investigate:active {
+            transform: translateY(2px) scale(0.98);
+            background: rgba(253, 1, 0, 0.2);
+        }
+
+        .btn-investigate::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(253,1,0,0.4) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn-investigate:hover::after {
+            opacity: 1;
+        }
+
+        @keyframes dotsBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .case-section {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 40px;
+            border: 1px solid var(--glitch-red);
+            margin-bottom: 60px;
+            position: relative;
+            transition: box-shadow 0.3s;
+        }
+        
+        .case-section:hover {
+            box-shadow: 0 0 30px rgba(253, 1, 0, 0.3);
+        }
+        
+        .case-section::before {
+            content: "CASE FILE: BLACKWOOD";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: var(--ui-dark);
+            padding: 0 10px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1rem;
+            color: var(--glitch-red);
+        }
+        
+        .section-title {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--glitch-red);
+            margin-bottom: 3rem;
+            text-align: center;
+            position: relative;
+            font-size: 2.2rem;
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 2px;
+            background: var(--glitch-red);
+        }
+        
+        .victim-card {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+            align-items: center;
+        }
+        
+        .victim-image {
+            width: 200px;
+            height: 200px;
+            border: 3px solid var(--glitch-red);
+            object-fit: cover;
+            object-position: center;
+            filter: grayscale(80%) contrast(120%);
+            border-radius: 5px;
+            margin: 0 auto;
+            display: block;
+            transition: filter 0.5s;
+        }
+        
+        .victim-image:hover {
+            filter: grayscale(50%) contrast(130%) brightness(1.1);
+        }
+        
+        .victim-info {
+            flex: 1;
+        }
+        
+        .victim-name {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--glitch-red);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .suspects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .suspect-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background: rgba(36, 36, 36, 0.8);
+            border: 1px solid var(--white);
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .suspect-card:hover {
+            transform: translateY(-5px) rotate(0.5deg);
+            border-color: var(--glitch-red);
+            box-shadow: 0 10px 20px rgba(253, 1, 0, 0.4);
+        }
+        
+        .suspect-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            object-position: center;
+            margin-bottom: 20px;
+            filter: grayscale(50%) contrast(110%);
+            border-radius: 5px;
+            aspect-ratio: 1/1;
+            transition: filter 0.3s, transform 0.3s;
+        }
+        
+        .suspect-card:hover .suspect-image {
+            filter: grayscale(20%) contrast(120%);
+            transform: scale(1.02);
+        }
+        
+        .suspect-name {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--white);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .suspect-card:hover .suspect-name {
+            color: var(--glitch-red);
+        }
+        
+        .suspect-motive {
+            font-size: 1.1rem;
+            color: var(--pink-highlight);
+            margin-bottom: 1rem;
+        }
+        
+        .suspect-clue {
+            font-size: 1rem;
+            font-style: italic;
+            color: var(--text-offwhite);
+            opacity: 0.8;
+        }
+        
+        .game-mechanics {
+            background: rgba(246, 250, 254, 0.1);
+            padding: 40px;
+            border-left: 5px solid var(--white);
+            margin: 40px 0;
+        }
+        
+        .mechanic-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+        
+        .mechanic-icon {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+        
+        .mechanic-title {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--white);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .assistants {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .assistant-card {
+            background: rgba(0, 0, 0, 0.591);
+            padding: 25px;
+            border: 1px solid var(--glitch-red);
+            transition: all 0.3s ease;
+        }
+        
+        .assistant-card:hover {
+            transform: translateY(-5px) rotate(0.5deg);
+            box-shadow: 0 10px 20px rgba(255, 0, 0, 0.4);
+        }
+        
+        .assistant-name {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--glitch-red);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+                line-height: 1.6;
+            }
+            
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.4rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .btn-investigate {
+                font-size: 1.2rem;
+                padding: 15px 30px;
+            }
+            
+            .victim-card {
+                flex-direction: column;
+            }
+            
+            .victim-image {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .suspect-image {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="crt-overlay"></div>
+    
+    <section class="hero">
+        <h1 class="title" id="typewriter">DIGITAL DETECTIVE</h1>
+        <p class="subtitle">O Mistério da Mansão Blackwood</p>
+        
+        <div class="animation">
+            <lottie-player
+                src="assets/lottie/animation.json"
+                background="transparent"
+                speed="1"
+                loop
+                autoplay>
+            </lottie-player>
+        </div>
+        
+        <button class="btn-investigate" id="investigateBtn">
+            <span class="btn-text">INICIAR INVESTIGAÇÃO</span>
+            <span class="btn-dots"></span>
+        </button>
+    </section>
+
+    <div class="container">
+        <div class="case-section">
+            <h2 class="section-title">O CASO BLACKWOOD</h2>
+            
+            <div class="victim-card">
+                <img src="https://cdn.vectorstock.com/i/500p/08/19/gray-human-icon-profile-placeholder-vector-35850819.jpg" alt="Lord Edmund Blackwood" class="victim-image">
+                <div class="victim-info">
+                    <h3 class="victim-name">VÍTIMA: LORD EDMUND BLACKWOOD II</h3>
+                    <p><strong>Idade:</strong> 48 anos</p>
+                    <p><strong>Causa da morte:</strong> Desconhecida</p>
+                    <p><strong>Bilhete misterioso:</strong> "Sua ganância te condenou"</p>
+                </div>
+            </div>
+            
+            <h3 style="color: var(--glitch-red); font-family: 'Press Start 2P', cursive; margin-bottom: 20px; font-size: 1.5rem;">CENÁRIO:</h3>
+            <p>Mansão Blackwood, uma propriedade clássica nos arredores de Neo Aurora (2000). Na noite de inauguração do Museu Blackwood, durante um jantar para investidores, Lord Blackwood foi encontrado morto em seu escritório. Uma violenta tempestade isolou a mansão, com estradas bloqueadas e telefones sem sinal. Agora cabe a você descobrir quem é o culpado, mas seus recursos são limitados.</p>
+        </div>
+        
+        <h2 class="section-title">PRINCIPAIS SUSPEITOS</h2>
+        <div class="suspects-grid">
+            <div class="suspect-card">
+                <img src="https://cdn.vectorstock.com/i/500p/08/19/gray-human-icon-profile-placeholder-vector-35850819.jpg" alt="Helena Blackwood" class="suspect-image">
+                <h4 class="suspect-name">HELENA BLACKWOOD</h4>
+                <p><strong>Relação:</strong> Esposa (37 anos)</p>
+                <p class="suspect-motive"><strong>Motivo:</strong> Testamento secreto que a excluía da herança</p>
+                <p class="suspect-clue"><strong>Pista:</strong> Sangue na manga do vestido</p>
+            </div>
+            
+            <div class="suspect-card">
+                <img src="https://cdn.vectorstock.com/i/500p/08/19/gray-human-icon-profile-placeholder-vector-35850819.jpg" alt="Victor Blackwood" class="suspect-image">
+                <h4 class="suspect-name">VICTOR BLACKWOOD</h4>
+                <p><strong>Relação:</strong> Filho (35 anos)</p>
+                <p class="suspect-motive"><strong>Motivo:</strong> Pai planejava vender a mansão</p>
+                <p class="suspect-clue"><strong>Pista:</strong> Mala com passaporte falso</p>
+            </div>
+            
+            <div class="suspect-card">
+                <img src="https://cdn.vectorstock.com/i/500p/08/19/gray-human-icon-profile-placeholder-vector-35850819.jpg" alt="Dra. Margaret Whitmore" class="suspect-image">
+                <h4 class="suspect-name">DRA. MARGARET WHITMORE</h4>
+                <p><strong>Relação:</strong> Sócia (50 anos)</p>
+                <p class="suspect-motive"><strong>Motivo:</strong> Contrabando de remédios descoberto</p>
+                <p class="suspect-clue"><strong>Pista:</strong> Maleta com ketamina</p>
+            </div>
+            
+            <div class="suspect-card">
+                <img src="https://cdn.vectorstock.com/i/500p/08/19/gray-human-icon-profile-placeholder-vector-35850819.jpg" alt="James Morton" class="suspect-image">
+                <h4 class="suspect-name">JAMES MORTON</h4>
+                <p><strong>Relação:</strong> Segurança (45 anos)</p>
+                <p class="suspect-motive"><strong>Motivo:</strong> Venda de informações para a máfia</p>
+                <p class="suspect-clue"><strong>Pista:</strong> Mensagens com Dante Moretti</p>
+            </div>
+            
+            <div class="suspect-card">
+                <img src="https://cdn.vectorstock.com/i/500p/08/19/gray-human-icon-profile-placeholder-vector-35850819.jpg" alt="Isabelle Crane" class="suspect-image">
+                <h4 class="suspect-name">ISABELLE CRANE</h4>
+                <p><strong>Relação:</strong> Estagiária (25 anos)</p>
+                <p class="suspect-motive"><strong>Motivo:</strong> Assédio e ameaças</p>
+                <p class="suspect-clue"><strong>Pista:</strong> Diário com esboço da adaga</p>
+            </div>
+       
+            <div class="suspect-card">
+                <img src="https://cdn.vectorstock.com/i/500p/08/19/gray-human-icon-profile-placeholder-vector-35850819.jpg" alt="Sebastian Locke" class="suspect-image">
+                <h4 class="suspect-name">SEBASTIAN LOCKE</h4>
+                <p><strong>Relação:</strong> Curador do Museu (42 anos)</p>
+                <p class="suspect-motive"><strong>Motivo:</strong> Desvio de fundos descoberto</p>
+                <p class="suspect-clue"><strong>Pista:</strong> Transferências bancárias suspeitas</p>
+            </div>
+        </div>
+
+        <div class="game-mechanics">
+            <h2 class="section-title">MECÂNICAS DO JOGO</h2>
+            
+            <div class="mechanic-item">
+                <img src="assets/icons/email.png" alt="E-mail" class="mechanic-icon">
+                <div>
+                    <h3 class="mechanic-title">E-MAILS</h3>
+                    <p>Sua única ferramenta para trocar mensagens com os suspeitos.</p>
+                </div>
+            </div>
+            
+            <div class="mechanic-item">
+                <img src="assets/icons/chat.png" alt="Chat" class="mechanic-icon">
+                <div>
+                    <h3 class="mechanic-title">CHAT</h3>
+                    <p>Conversa com seu assistente para discutir pistas e tomar decisões durante a investigação.</p>
+                </div>
+            </div>
+            
+            <div class="mechanic-item">
+                <img src="assets/icons/search.png" alt="Busca" class="mechanic-icon">
+                <div>
+                    <h3 class="mechanic-title">SEARCH</h3>
+                    <p>Motor de busca para pesquisar informações sobre suspeitos e eventos relacionados ao caso.</p>
+                </div>
+            </div>
+            
+            <div class="mechanic-item">
+                <img src="assets/icons/news.png" alt="Notícias" class="mechanic-icon">
+                <div>
+                    <h3 class="mechanic-title">NOTÍCIAS</h3>
+                    <p>Manchetes que mudam conforme sua investigação avança, afetando a percepção pública do caso.</p>
+                </div>
+            </div>
+            
+            <div class="mechanic-item">
+                <img src="assets/icons/notepad.png" alt="Bloco de Notas" class="mechanic-icon">
+                <div>
+                    <h3 class="mechanic-title">BLOCOS DE NOTAS</h3>
+                    <p>Faça suas anotações sobre o caso em um bloco de notas. Organize suas teorias e suspeitas.</p>
+                </div>
+            </div>
+            
+            <div class="mechanic-item">
+                <img src="assets/icons/files.png" alt="Arquivos" class="mechanic-icon">
+                <div>
+                    <h3 class="mechanic-title">ARQUIVOS DO CASO</h3>
+                    <p>Um histórico completo de toda sua investigação, com todas as pistas e descobertas organizadas cronologicamente.</p>
+                </div>
+            </div>
+            
+            <div class="mechanic-item">
+                <img src="assets/icons/investigate.png" alt="Investigação" class="mechanic-icon">
+                <div>
+                    <h3 class="mechanic-title">INVESTIGAÇÃO</h3>
+                    <p>Analise a arma do crime, as provas coletadas e as fotos do caso em detalhes para encontrar pistas ocultas.</p>
+                </div>
+            </div>
+            
+            <div class="mechanic-item">
+                <img src="assets/icons/minesweeper.png" alt="Campo Minado" class="mechanic-icon">
+                <div>
+                    <h3 class="mechanic-title">CAMPO MINADO</h3>
+                    <p>Um jogo clássico para se distrair quando encontrar bloqueios na investigação. Às vezes, a solução vem quando você para para pensar.</p>
+                </div>
+            </div>
+        </div>
+        
+        <h2 class="section-title">ESCOLHA SEU ASSISTENTE</h2>
+        <div class="assistants">
+            <div class="assistant-card">
+                <h4 class="assistant-name">RICO BELMONT</h4>
+                <p><strong>Vantagem:</strong> Suborna autoridades por informações</p>
+                <p><strong>Desvantagem:</strong> Policiais não cooperam</p>
+            </div>
+            
+            <div class="assistant-card">
+                <h4 class="assistant-name">CLARA MAIA</h4>
+                <p><strong>Vantagem:</strong> Consegue empatia da viúva</p>
+                <p><strong>Desvantagem:</strong> Pistas podem atrasar</p>
+            </div>
+            
+            <div class="assistant-card">
+                <h4 class="assistant-name">BÁRBARA HACKER</h4>
+                <p><strong>Vantagem:</strong> Acessa e-mails apagados</p>
+                <p><strong>Desvantagem:</strong> Atrai atenção da polícia</p>
+            </div>
+            
+            <div class="assistant-card">
+                <h4 class="assistant-name">DONA LURDES</h4>
+                <p><strong>Vantagem:</strong> Descobre fofocas importantes</p>
+                <p><strong>Desvantagem:</strong> Análise lenta de provas</p>
+            </div>
+            
+            <div class="assistant-card">
+                <h4 class="assistant-name">DRA. ICE</h4>
+                <p><strong>Vantagem:</strong> Extrai confissões</p>
+                <p><strong>Desvantagem:</strong> Irrita suspeitos</p>
+            </div>
+
+            <div class="assistant-card">
+                <h4 class="assistant-name">MAIS ASSISTENTES POR VIR!</h4>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const title = document.getElementById('typewriter');
+        const text = "DIGITAL DETECTIVE";
+        let i = 0;
+        
+        function typeWriter() {
+            if (i < text.length) {
+                title.innerHTML = text.substring(0, i + 1) + '<span class="blink"></span>';
+                i++;
+                setTimeout(typeWriter, 100);
+            }
+        }
+        
+        typeWriter();
+        
+       
+        const subtitle = document.querySelector('.subtitle');
+        const subtitleText = subtitle.textContent;
+        subtitle.textContent = '';
+        
+        let j = 0;
+        function typeSubtitle() {
+            if (j < subtitleText.length) {
+                subtitle.textContent += subtitleText.charAt(j);
+                j++;
+                setTimeout(typeSubtitle, 50);
+            }
+        }
+        
+        setTimeout(typeSubtitle, 1500);
+
+        document.querySelectorAll('.case-section, .suspect-card, .assistant-card').forEach(section => {
+            section.addEventListener('mouseenter', () => {
+                section.style.transform = 'translateY(-3px)';
+            });
+            
+            section.addEventListener('mouseleave', () => {
+                section.style.transform = '';
+            });
+        });
+
+      
+        document.querySelectorAll('.suspect-card, .assistant-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    card.style.transform = '';
+                }, 200);
+            });
+        });
+
+document.getElementById('investigateBtn').addEventListener('click', function() {
+    this.style.transform = 'scale(0.98)';
+    
+    fetch('http://localhost:5000/api/game/start', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ assistant_id: 1 }) // ou o ID do assistente selecionado
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Redireciona para a interface do jogo
+        window.location.href = 'http://localhost:5000/game';
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+
+
+        document.querySelectorAll('lottie-player').forEach(player => {
+            player.addEventListener('mouseenter', () => player.pause());
+            player.addEventListener('mouseleave', () => player.play());
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,404 @@
+/* Windows 98 Style Components */
+
+/* Window Styles */
+.window {
+    position: absolute;
+    background: var(--color-background);
+    border: var(--window-border) outset var(--color-background);
+    min-width: 300px;
+    min-height: 200px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+}
+
+.window.active {
+    z-index: 200;
+}
+
+.window-header {
+    background:#242424 ;
+    color: white;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: move;
+    height: 20px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.window-header.inactive {
+    background: linear-gradient(90deg, var(--color-scroll), #999);
+}
+
+.window-title {
+    padding-left: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.window-controls {
+    display: flex;
+    gap: 1px;
+}
+
+.window-control {
+    width: 16px;
+    height: 14px;
+    background: var(--color-background);
+    border: 1px outset var(--color-background);
+    font-size: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+}
+
+.window-control:active {
+    border: 1px inset var(--color-background);
+}
+
+.window-close {
+    background: var(--color-background);
+    border: 1px outset var(--color-background);
+    width: 16px;
+    height: 14px;
+    font-size: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+}
+
+.window-close:active {
+    border: 1px inset var(--color-background);
+}
+
+.window-content {
+    padding: 8px;
+    height: calc(100% - 40px); /* Adjust for header and controls */
+    overflow: auto;
+    background: var(--color-background);
+}
+.window-content p{  
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-primary);
+    font-size: 13px;
+    color: black;
+}
+/* Menu Bar */
+.menu-bar {
+    background: var(--color-background);
+    border-bottom: 1px solid var(--color-scroll);
+    padding: 2px;
+    font-size: 11px;
+}
+
+.menu-item {
+    display: inline-block;
+    padding: 4px 8px;
+    cursor: pointer;
+}
+
+.menu-item:hover {
+    background: var(--color-scroll);
+}
+
+/* Toolbar */
+.toolbar {
+    background: var(--color-background);
+    border-bottom: 1px solid var(--color-scroll);
+    padding: 4px;
+    display: flex;
+    gap: 2px;
+    align-items: center;
+}
+
+.toolbar-button {
+    width: 24px;
+    height: 24px;
+    background: var(--color-background);
+    border: 1px outset var(--color-background);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toolbar-button:active {
+    border: 1px inset var(--color-background);
+}
+
+.toolbar-button img {
+    width: 16px;
+    height: 16px;
+}
+
+.toolbar-separator {
+    width: 1px;
+    height: 20px;
+    background: var(--color-scroll);
+    margin: 0 2px;
+}
+
+/* Status Bar */
+.status-bar {
+    background: var(--color-background);
+    border-top: 1px solid var(--color-scroll);
+    padding: 2px 8px;
+    font-size: 10px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.status-panel {
+    border: 1px inset var(--color-background);
+    padding: 1px 4px;
+    background: var(--color-background);
+}
+
+/* Scrollbars */
+.scrollable {
+    overflow: auto;
+}
+
+.scrollable::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+}
+
+.scrollable::-webkit-scrollbar-track {
+    background: var(--color-background);
+    border: 1px inset var(--color-background);
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+    background: var(--color-scroll);
+    border: 1px outset var(--color-scroll);
+}
+
+.scrollable::-webkit-scrollbar-corner {
+    background: var(--color-background);
+}
+
+/* Input Fields */
+.input-field {
+    border: 2px inset var(--color-background);
+    padding: 2px 4px;
+    font-family: var(--font-primary);
+    font-size: 11px;
+    background: white;
+    color: black;
+}
+
+.input-field:focus {
+    outline: none;
+    background: white;
+}
+
+.textarea-field {
+    border: 2px inset var(--color-background);
+    padding: 4px;
+    font-family: var(--font-primary);
+    font-size: 11px;
+    background: white;
+    color: black;
+    resize: none;
+}
+
+.textarea-field:focus {
+    outline: none;
+    background: white;
+}
+
+/* List Views */
+.list-view {
+    border: 2px inset var(--color-background);
+    background: white;
+    color: black;
+    font-size: 11px;
+}
+
+.list-item {
+    padding: 2px 4px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.list-item:hover {
+    background: #e0e0e0;
+}
+
+.list-item.selected {
+    background: #cc0000;
+    color: white;
+}
+
+/* Tree View */
+.tree-view {
+    border: 2px inset var(--color-background);
+    background: white;
+    color: black;
+    font-size: 11px;
+    padding: 4px;
+}
+
+.tree-item {
+    padding: 1px 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.tree-item:hover {
+    background: #e0e0e0;
+}
+
+.tree-item.selected {
+    background: #cc0000;
+    color: white;
+}
+
+.tree-icon {
+    width: 16px;
+    height: 16px;
+}
+
+/* Tab Control */
+.tab-control {
+    border: 1px solid var(--color-scroll);
+}
+
+.tab-headers {
+    display: flex;
+    background: var(--color-background);
+    border-bottom: 1px solid var(--color-scroll);
+}
+
+.tab-header {
+    padding: 4px 12px;
+    border-right: 1px solid var(--color-scroll);
+    cursor: pointer;
+    font-size: 11px;
+    background: var(--color-background);
+    border-top: 2px outset var(--color-background);
+}
+
+.tab-header.active {
+    background: white;
+    border-bottom: 1px solid white;
+    border-top: 2px inset var(--color-background);
+}
+
+.tab-content {
+    padding: 8px;
+    background: white;
+    min-height: 200px;
+}
+
+/* Progress Bar */
+.progress-bar {
+    border: 2px inset var(--color-background);
+    height: 20px;
+    background: var(--color-background);
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #cc0000;
+    transition: width 0.3s ease;
+}
+
+/* Group Box */
+.group-box {
+    border: 2px inset var(--color-background);
+    margin: 8px 0;
+    padding: 8px;
+    position: relative;
+}
+
+.group-box-title {
+    position: absolute;
+    top: -8px;
+    left: 8px;
+    background: var(--color-background);
+    padding: 0 4px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+/* Checkbox and Radio */
+.checkbox, .radio {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    margin: 2px 0;
+}
+
+.checkbox input, .radio input {
+    width: 13px;
+    height: 13px;
+}
+
+/* Dropdown */
+.dropdown {
+    border: 2px inset var(--color-background);
+    background: white;
+    font-family: var(--font-primary);
+    font-size: 11px;
+    padding: 2px 20px 2px 4px;
+    cursor: pointer;
+    position: relative;
+}
+
+.dropdown::after {
+    content: '▼';
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 8px;
+    pointer-events: none;
+}
+
+/* Animations */
+@keyframes window-open {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.window.opening {
+    animation: window-open 0.2s ease-out;
+}
+
+/* Resize Handle */
+.resize-handle {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 16px;
+    height: 16px;
+    cursor: nw-resize;
+    background: linear-gradient(135deg, transparent 40%, var(--color-scroll) 40%, var(--color-scroll) 60%, transparent 60%);
+}
+

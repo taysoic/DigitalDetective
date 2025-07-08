@@ -1,0 +1,198 @@
+/* Digital Detective - Icon Fallbacks */
+
+/* Toolbar button icons using Unicode */
+.toolbar-button img {
+    width: 16px;
+    height: 16px;
+}
+
+/* Fallback icons when images are not available */
+.toolbar-button img[src*="compose.png"]::before,
+.toolbar-button img[alt="Novo"]::before {
+    content: "✉️";
+    font-size: 16px;
+}
+
+.toolbar-button img[src*="reply.png"]::before,
+.toolbar-button img[alt="Responder"]::before {
+    content: "↩️";
+    font-size: 16px;
+}
+
+.toolbar-button img[src*="refresh.png"]::before,
+.toolbar-button img[alt="Atualizar"]::before {
+    content: "🔄";
+    font-size: 16px;
+}
+
+.toolbar-button img[src*="delete.png"]::before,
+.toolbar-button img[alt="Excluir"]::before {
+    content: "🗑️";
+    font-size: 16px;
+}
+
+.toolbar-button img[src*="new.png"]::before,
+.toolbar-button img[alt="Nova"]::before {
+    content: "📄";
+    font-size: 16px;
+}
+
+.toolbar-button img[src*="save.png"]::before,
+.toolbar-button img[alt="Salvar"]::before {
+    content: "💾";
+    font-size: 16px;
+}
+
+.toolbar-button img[src*="search.png"]::before,
+.toolbar-button img[alt="Buscar"]::before {
+    content: "🔍";
+    font-size: 16px;
+}
+
+.toolbar-button img[src*="export.png"]::before,
+.toolbar-button img[alt="Exportar"]::before {
+    content: "📤";
+    font-size: 16px;
+}
+
+.toolbar-button img[src*="analyze.png"]::before,
+.toolbar-button img[alt="Analisar"]::before {
+    content: "🧪";
+    font-size: 16px;
+}
+
+.toolbar-button img[src*="solve.png"]::before,
+.toolbar-button img[alt="Resolver"]::before {
+    content: "🎯";
+    font-size: 16px;
+}
+
+.toolbar-button img[src*="print.png"]::before,
+.toolbar-button img[alt="Imprimir"]::before {
+    content: "🖨️";
+    font-size: 16px;
+}
+
+/* Desktop icons */
+.desktop-icon[data-app="email"]::before {
+
+    font-size: 32px;
+    display: block;
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.desktop-icon[data-app="chat"]::before {
+
+    font-size: 32px;
+    display: block;
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.desktop-icon[data-app="news"]::before {
+
+    font-size: 32px;
+    display: block;
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.desktop-icon[data-app="notes"]::before {
+
+    font-size: 32px;
+    display: block;
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.desktop-icon[data-app="investigation"]::before {
+ 
+    font-size: 32px;
+    display: block;
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.desktop-icon[data-app="minesweeper"]::before {
+
+    font-size: 32px;
+    display: block;
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+/* Assistant avatars fallback */
+.assistant-avatar,
+.message-avatar {
+    background: var(--color-background);
+    border: 1px solid var(--color-scroll);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.assistant-avatar::before,
+.message-avatar::before {
+    content: "👤";
+}
+
+/* When specific assistant images are not available */
+img[src*="rico_belmont"]::before {
+    content: "🕵️‍♂️";
+}
+
+img[src*="clara_maia"]::before {
+    content: "👩‍🔬";
+}
+
+img[src*="barbara_hacker"]::before {
+    content: "👩‍💻";
+}
+
+img[src*="dona_lurdes"]::before {
+    content: "👵";
+}
+
+img[src*="dra_ice"]::before {
+    content: "👩‍⚕️";
+}
+
+img[src*="detective"]::before {
+    content: "🕵️";
+}
+
+/* Handle broken images */
+img {
+    position: relative;
+}
+
+img::before {
+    content: attr(alt);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--color-background);
+    border: 1px solid var(--color-scroll);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--color-text);
+    text-align: center;
+    z-index: 1;
+}
+
+img:not([src]),
+img[src=""] {
+    opacity: 0;
+}
+
+img:not([src])::before,
+img[src=""]::before {
+    opacity: 1;
+}
+

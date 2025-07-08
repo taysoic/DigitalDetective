@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 | Digital Detective</title>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ui-dark: #242424;
+            --glitch-red: #FD0100;
+            --pink-highlight: #FFC3B8;
+            --text-offwhite: #F5F3F6;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background: var(--ui-dark);
+            color: var(--text-offwhite);
+            font-family: 'Times New Roman', serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        
+        .crt-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0.1) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 5;
+            pointer-events: none;
+            animation: flicker 0.15s infinite alternate;
+        }
+        
+        @keyframes flicker {
+            0% { opacity: 0.9; }
+            100% { opacity: 1; }
+        }
+        
+        .floppy-animation {
+            width: 900px;
+            height: 500px;
+            margin: 0 auto 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            filter: drop-shadow(0 0 10px var(--glitch-red));
+            position: relative;
+            z-index: 10;
+            transition: all 0.4s ease;
+        }
+        
+        .floppy-animation:hover {
+            filter: drop-shadow(0 0 15px var(--glitch-red)) hue-rotate(10deg);
+            transform: scale(1.02);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .floppy-animation lottie-player {
+            width: 100%;
+            height: 100%;
+        }
+        
+        h1 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 2rem;
+            color: var(--glitch-red);
+            margin-bottom: 1rem;
+            text-shadow: 0 0 5px rgba(253, 1, 0, 0.5);
+            position: relative;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        h1:hover {
+            text-shadow: 0 0 15px var(--glitch-red);
+            transform: scale(1.05);
+        }
+        
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+            position: relative;
+            z-index: 10;
+            transition: all 0.3s;
+        }
+        
+        p:hover {
+            letter-spacing: 1px;
+        }
+        
+        .btn-desktop {
+            background: transparent;
+            color: var(--text-offwhite);
+            border: 2px solid var(--pink-highlight);
+            padding: 15px 40px;
+            font-size: 1rem;
+            font-family: 'Press Start 2P', cursive;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-desktop .btn-dots {
+            display: inline-block;
+            width: 0;
+            overflow: hidden;
+            transition: width 0.3s ease;
+        }
+
+        .btn-desktop:hover {
+            background: rgba(255, 195, 184, 0.1);
+            box-shadow: 0 0 20px rgba(255, 195, 184, 0.5);
+            animation: glitch 0.5s linear infinite;
+        }
+
+        .btn-desktop:hover .btn-dots {
+            width: 20px;
+        }
+
+        .btn-desktop:hover .btn-dots::before {
+            content: "...";
+            animation: dotsBlink 1s infinite;
+        }
+
+        .btn-desktop:active {
+            transform: translateY(2px) scale(0.98);
+            background: rgba(255, 195, 184, 0.2);
+        }
+
+        .btn-desktop::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,195,184,0.4) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn-desktop:hover::after {
+            opacity: 1;
+        }
+
+        @keyframes dotsBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        @keyframes system-fail {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.5) contrast(2); }
+        }
+        
+        body.loading-error {
+            animation: system-fail 0.3s 3;
+        }
+        
+        @media (max-width: 600px) {
+            .floppy-animation {
+                width: 300px;
+                height: 200px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="crt-overlay"></div>
+    
+    <div class="floppy-animation">
+        <lottie-player
+            id="error-animation"
+            src="assets/lottie/broken-floppy.json"
+            background="transparent"
+            speed="0.5"
+            loop
+            autoplay>
+        </lottie-player>
+    </div>
+    
+    <h1>404: PÁGINA NÃO ENCONTRADA</h1>
+    <p>Essa Evidência Foi Apagada.</p>
+    
+    <button class="btn-desktop" id="returnBtn">
+        <span class="btn-text">RETORNAR AO INÍCIO</span>
+        <span class="btn-dots"></span>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = document.getElementById('returnBtn');
+            const animation = document.getElementById('error-animation');
+            
+            const errorMessage = document.querySelector('p');
+            const messageText = errorMessage.textContent;
+            errorMessage.textContent = '';
+            
+            let k = 0;
+            function typeMessage() {
+                if (k < messageText.length) {
+                    errorMessage.textContent += messageText.charAt(k);
+                    k++;
+                    setTimeout(typeMessage, 50);
+                }
+            }
+            
+            setTimeout(typeMessage, 1000);
+
+            const floppyAnimation = document.querySelector('.floppy-animation');
+            floppyAnimation.addEventListener('click', () => {
+                floppyAnimation.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    floppyAnimation.style.transform = '';
+                }, 200);
+            });
+
+            document.querySelectorAll('h1, p').forEach(text => {
+                text.addEventListener('mouseenter', () => {
+                    text.style.transform = 'translateY(-2px)';
+                });
+                
+                text.addEventListener('mouseleave', () => {
+                    text.style.transform = '';
+                });
+            });
+
+            animation.addEventListener('mouseover', () => {
+                animation.setAttribute('speed', '0.8');
+            });
+            
+            animation.addEventListener('mouseout', () => {
+                animation.setAttribute('speed', '0.5');
+            });
+            
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                btn.style.transform = 'scale(0.98)';
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 300);
+            });
+            
+            btn.addEventListener('mouseenter', () => {
+                document.querySelector('.crt-overlay').style.animation = 'flicker 0.05s infinite';
+            });
+            
+            btn.addEventListener('mouseleave', () => {
+                document.querySelector('.crt-overlay').style.animation = 'flicker 0.15s infinite';
+            });
+            animation.addEventListener('mouseenter', () => {
+                animation.pause();
+            });
+            animation.addEventListener('mouseleave', () => {
+                animation.play();
+            });
+        });
+    </script>
+</body>
+</html>
