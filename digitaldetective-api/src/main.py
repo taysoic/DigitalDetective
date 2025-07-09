@@ -1,7 +1,6 @@
 import os
 import sys
 import random
-import json
 import time
 import webbrowser
 import os
@@ -270,8 +269,6 @@ def get_emails(user_id):
         
         # Simulate receiving emails based on game progress
         session = game_sessions[user_id]
-        case_id = session['case_id']
-        
         # Generate initial emails if none exist
         if not session['emails']:
             initial_emails = [
@@ -374,10 +371,10 @@ def send_chat_message():
         assistant = cursor.fetchone()
         
         # Simple response generation based on assistant personality
+        cursor.fetchone()
+        
+        # Simple response generation based on assistant personality
         responses = {
-            1: "Rico aqui. Deixa comigo, tenho contatos que podem ajudar... por um preço.",
-            2: "Clara falando. Vou tentar entender o lado humano dessa história...",
-            3: "Bárbara aqui. Hackear sistemas? Relaxa, já fiz coisa pior.",
             4: "Dona Lurdes na área. Quer saber a verdade? Eu sei tudo sobre essa gente...",
             5: "Dra. Ice aqui. Analisando o perfil... eles têm padrões comportamentais interessantes."
         }

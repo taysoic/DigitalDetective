@@ -151,21 +151,7 @@ function generateClueAnalysis($clue) {
     
     return $analyses[$clue['type']] ?? 'Análise em andamento...';
 }
-function handleGetWeapons($case_id) {
-    // Example: Fetch weapons from database or static array
-    // Replace this with your actual logic
-    $weapons = [
-        1 => ['id' => 1, 'name' => 'Knife', 'description' => 'A sharp kitchen knife.'],
-        2 => ['id' => 2, 'name' => 'Pistol', 'description' => 'A standard 9mm pistol.'],
-        3 => ['id' => 3, 'name' => 'Poison', 'description' => 'A vial of colorless poison.']
-    ];
-
-    // For demonstration, return all weapons (or filter by $case_id if needed)
-    jsonResponse([
-        'case_id' => $case_id,
-        'weapons' => array_values($weapons)
-    ]);
-}
+/* Removed handleGetWeapons as weapon data is handled in handleGetClues */
 function determineClueImportance($clue_id, $user_id, $pdo) {
     // Verificar se a pista está relacionada ao culpado correto
     $stmt = $pdo->prepare("
@@ -182,5 +168,35 @@ function determineClueImportance($clue_id, $user_id, $pdo) {
     $result = $stmt->fetch();
     
     return $result['relevance'] > 0 ? 'high' : 'medium';
+}
+
+// Helper function to send JSON responses
+function jsonResponse($data, $status_code = 200) {
+    http_response_code($status_code);
+    header('Content-Type: application/json');
+    echo json_encode($data);
+    exit;
+}
+
+// Helper function to get JSON input from POST body
+function getJsonInput() {
+    $input = file_get_contents('php://input');
+    $data = json_decode($input, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        jsonResponse(['error' => 'Invalid JSON input'], 400);
+    }
+    return $data;
+}
+
+// Routing logic for endpoint access
+if (php_sapi_name() !== 'cli') {
+    $path = $_GET['action'] ?? null;
+    if ($path === 'getClues' && isset($_GET['case_id'])) {
+        handleGetClues($_GET['case_id']);
+    } elseif ($path === 'analyzeClue') {
+        handleAnalyzeClue();
+    } else {
+        jsonResponse(['error' => 'Invalid endpoint or missing parameters'], 400);
+    }
 }
 

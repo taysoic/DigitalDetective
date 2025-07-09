@@ -231,7 +231,6 @@ const APIHandlers = {
             
             // Show result modal
             const resultMessage = response.message;
-            const isCorrect = response.outcome === 'victory';
             
             setTimeout(() => {
                 alert(`${resultMessage}\n\nCulpado correto: ${response.correct_culprit_name}\nArma: ${response.correct_weapon_name}`);

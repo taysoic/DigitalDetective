@@ -276,10 +276,10 @@ const InvestigationApp = {
     },
     
     setupEventListeners() {
-        const window = WindowManager.getWindow('investigation');
-        if (!window) return;
+        const invWindow = WindowManager.getWindow('investigation');
+        if (!invWindow) return;
         
-        const windowElement = window.element;
+        const windowElement = invWindow.element;
         
         // Tab switching
         windowElement.querySelectorAll('.tab-header').forEach(header => {
@@ -410,11 +410,11 @@ const InvestigationApp = {
     },
     
     switchTab(tabName) {
-        const window = WindowManager.getWindow('investigation');
-        if (!window) return;
+        const invWindow = WindowManager.getWindow('investigation');
+        if (!invWindow) return;
         
         // Update tab headers
-        window.element.querySelectorAll('.tab-header').forEach(header => {
+        invWindow.element.querySelectorAll('.tab-header').forEach(header => {
             header.classList.remove('active');
             if (header.dataset.tab === tabName) {
                 header.classList.add('active');
@@ -422,17 +422,17 @@ const InvestigationApp = {
         });
         
         // Update tab panels
-        window.element.querySelectorAll('.tab-panel').forEach(panel => {
+        invWindow.element.querySelectorAll('.tab-panel').forEach(panel => {
             panel.classList.remove('active');
         });
-        window.element.querySelector(`#${tabName}-panel`).classList.add('active');
+        invWindow.element.querySelector(`#${tabName}-panel`).classList.add('active');
     },
     
     renderCluesList() {
-        const window = WindowManager.getWindow('investigation');
-        if (!window) return;
+        const invWindow = WindowManager.getWindow('investigation');
+        if (!invWindow) return;
         
-        const cluesList = window.element.querySelector('#clues-list');
+        const cluesList = invWindow.element.querySelector('#clues-list');
         
         if (this.clues.length === 0) {
             cluesList.innerHTML = '<div class="loading">Nenhuma pista encontrada</div>';
@@ -461,10 +461,10 @@ const InvestigationApp = {
     },
     
     renderWeaponsList() {
-        const window = WindowManager.getWindow('investigation');
-        if (!window) return;
+        const invWindow = WindowManager.getWindow('investigation');
+        if (!invWindow) return;
         
-        const weaponsList = window.element.querySelector('#weapons-list');
+        const weaponsList = invWindow.element.querySelector('#weapons-list');
         
         if (this.weapons.length === 0) {
             weaponsList.innerHTML = '<div class="loading">Nenhuma arma encontrada</div>';
@@ -493,10 +493,10 @@ const InvestigationApp = {
     },
     
     renderSuspectsList() {
-        const window = WindowManager.getWindow('investigation');
-        if (!window) return;
+        const invWindow = WindowManager.getWindow('investigation');
+        if (!invWindow) return;
         
-        const suspectsList = window.element.querySelector('#suspects-list');
+        const suspectsList = invWindow.element.querySelector('#suspects-list');
         
         if (this.suspects.length === 0) {
             suspectsList.innerHTML = '<div class="loading">Nenhum suspeito encontrado</div>';
@@ -543,10 +543,10 @@ const InvestigationApp = {
     },
     
     updateSelection(type, id) {
-        const window = WindowManager.getWindow('investigation');
-        if (!window) return;
+        const invWindow = WindowManager.getWindow('investigation');
+        if (!invWindow) return;
         
-        const list = window.element.querySelector(`#${type}-list`);
+        const list = invWindow.element.querySelector(`#${type}-list`);
         list.querySelectorAll('.item').forEach(item => {
             item.classList.remove('selected');
             const itemId = parseInt(item.dataset[`${type.slice(0, -1)}Id`]);
@@ -557,10 +557,10 @@ const InvestigationApp = {
     },
     
     showClueDetails(clue) {
-        const window = WindowManager.getWindow('investigation');
-        if (!window) return;
+        const invWindow = WindowManager.getWindow('investigation');
+        if (!invWindow) return;
         
-        const details = window.element.querySelector('#clues-details');
+        const details = invWindow.element.querySelector('#clues-details');
         
         details.innerHTML = `
             <div class="detail-header">
@@ -585,10 +585,10 @@ const InvestigationApp = {
     },
     
     showWeaponDetails(weapon) {
-        const window = WindowManager.getWindow('investigation');
-        if (!window) return;
+        const invWindow = WindowManager.getWindow('investigation');
+        if (!invWindow) return;
         
-        const details = window.element.querySelector('#weapons-details');
+        const details = invWindow.element.querySelector('#weapons-details');
         
         details.innerHTML = `
             <div class="detail-header">
@@ -613,10 +613,10 @@ const InvestigationApp = {
     },
     
     showSuspectDetails(suspect) {
-        const window = WindowManager.getWindow('investigation');
-        if (!window) return;
+        const invWindow = WindowManager.getWindow('investigation');
+        if (!invWindow) return;
         
-        const details = window.element.querySelector('#suspects-details');
+        const details = invWindow.element.querySelector('#suspects-details');
         
         details.innerHTML = `
             <div class="detail-header">
@@ -664,12 +664,12 @@ const InvestigationApp = {
     showSolutionForm() {
         this.switchTab('analysis');
         
-        const window = WindowManager.getWindow('investigation');
-        if (!window) return;
+        const invWindow = WindowManager.getWindow('investigation');
+        if (!invWindow) return;
         
-        const solutionForm = window.element.querySelector('#solution-form');
-        const suspectSelect = window.element.querySelector('#suspect-select');
-        const weaponSelect = window.element.querySelector('#weapon-select');
+        const solutionForm = invWindow.element.querySelector('#solution-form');
+        const suspectSelect = invWindow.element.querySelector('#suspect-select');
+        const weaponSelect = invWindow.element.querySelector('#weapon-select');
         
         // Populate suspect dropdown
         suspectSelect.innerHTML = '<option value="">Selecione o suspeito...</option>';
@@ -693,15 +693,7 @@ const InvestigationApp = {
         solutionForm.style.display = 'block';
         
         // Add event listeners
-        window.element.querySelector('#submit-solution').addEventListener('click', () => {
-            this.submitSolution();
-        });
-        
-        window.element.querySelector('#cancel-solution').addEventListener('click', () => {
-            solutionForm.style.display = 'none';
-        });
-    },
-    
+        invWindow.element.querySelector('#submit-solution').addEventListener('click', () => {    
     async submitSolution() {
         const window = WindowManager.getWindow('investigation');
         if (!window) return;

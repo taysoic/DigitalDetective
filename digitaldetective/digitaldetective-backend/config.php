@@ -1,18 +1,18 @@
 <?php
 // Configuração do banco de dados
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'digitaldetective');
-define('DB_USER', 'root');
-define('DB_PASS', 'digitaldetective123');
-define('DB_CHARSET', 'utf8mb4');
+const DB_HOST = 'localhost';
+const DB_NAME = 'digitaldetective';
+const DB_USER = 'root';
+const DB_PASS = '';
+const DB_CHARSET = 'utf8mb4';
 
 // Configurações gerais
-define('API_VERSION', '1.0');
-define('CORS_ORIGIN', '*');
+const API_VERSION = '1.0';
+const CORS_ORIGIN = '*';
 
 // Configurações de tempo
-define('EMAIL_DELAY_MIN', 60); // 1 minuto em segundos
-define('EMAIL_DELAY_MAX', 300); // 5 minutos em segundos
+const EMAIL_DELAY_MIN = 60; // 1 minuto em segundos
+const EMAIL_DELAY_MAX = 300; // 5 minutos em segundos
 
 // Headers CORS
 function setCorsHeaders() {
@@ -61,5 +61,4 @@ function getJsonInput() {
     
     return $data;
 }
-?>
 
