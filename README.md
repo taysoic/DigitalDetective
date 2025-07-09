@@ -43,7 +43,7 @@ sudo service mysql start
 
 # Criar banco de dados e usuário (se não existirem)
 sudo mysql -e "CREATE DATABASE digitaldetective;"
-sudo mysql -e "CREATE USER 'root'@'localhost' IDENTIFIED BY 'digitaldetective123';"
+sudo mysql -e "CREATE USER 'root'@'localhost' IDENTIFIED BY '';"
 sudo mysql -e "GRANT ALL PRIVILEGES ON digitaldetective.* TO 'root'@'localhost';"
 sudo mysql -e "FLUSH PRIVILEGES;"
 
