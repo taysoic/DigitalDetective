@@ -694,23 +694,32 @@ const InvestigationApp = {
         
         // Add event listeners
         invWindow.element.querySelector('#submit-solution').addEventListener('click', () => {    
+            this.submitSolution();
+        });
+
+        // Cancel button event listener
+        invWindow.element.querySelector('#cancel-solution').addEventListener('click', () => {
+            solutionForm.style.display = 'none';
+        });
+    },
+
     async submitSolution() {
         const window = WindowManager.getWindow('investigation');
         if (!window) return;
-        
+
         const suspectId = parseInt(window.element.querySelector('#suspect-select').value);
         const weaponId = parseInt(window.element.querySelector('#weapon-select').value);
-        
+
         if (!suspectId) {
             Utils.showNotification('Selecione um suspeito', 'error');
             return;
         }
-        
+
         try {
             const response = await API.game.solve(GAME_STATE.userId, suspectId, weaponId);
             if (response.success) {
                 APIHandlers.handleCaseSolution(response);
-                
+
                 // Hide solution form
                 window.element.querySelector('#solution-form').style.display = 'none';
             }

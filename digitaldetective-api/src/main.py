@@ -6,7 +6,7 @@ import webbrowser
 import os
 
 # Caminho absoluto para o index.html
-file_path = os.path.abspath("Index.html")  # certifique-se que o nome e caminho estão corretos
+file_path = os.path.abspath("./Index.html")  # certifique-se que o nome e caminho estão corretos
 webbrowser.open(f"file://{file_path}")
 # Import necessary libraries
 from datetime import datetime
