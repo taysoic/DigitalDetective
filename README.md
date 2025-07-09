@@ -1,8 +1,7 @@
 # Digital Detective - O Mistério da Mansão Blackwood
 
 ## Descrição
-Jogo de investigação criminal ambientado no ano 2000, onde o detetive investiga remotamente através de e-mails, chats e arquivos digitais. O projeto foi desenvolvido com tema de cores vermelhas e cinzas conforme solicitado.
-
+Jogo de investigação criminal ambientado no ano 2000, onde o detetive investiga remotamente através de e-mails, chats e arquivos digitais. O projeto foi desenvolvido com tema de cores vermelhas e cinzas.
 ## Tecnologias Utilizadas
 - **Backend**: Flask (Python)
 - **Frontend**: HTML, CSS, JavaScript (estilo Windows 98)
