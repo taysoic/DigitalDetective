@@ -563,5 +563,5 @@ def serve(path):
 
 if __name__ == '__main__':
     # Mostra a URL para acesso manual
-    print(f"Servidor rodando em: ./{file_path}")
+    print(f"Servidor rodando em: http://localhost:5000")
     app.run(host='0.0.0.0', port=5000, debug=True)
