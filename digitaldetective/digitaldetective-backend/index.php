@@ -112,5 +112,4 @@ switch ($path) {
         jsonResponse(['error' => 'Endpoint not found'], 404);
         break;
 }
-?>
 

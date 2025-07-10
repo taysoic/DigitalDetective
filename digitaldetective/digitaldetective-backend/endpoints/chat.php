@@ -128,17 +128,40 @@ function generateAssistantResponse($assistant_id, $player_message, $user_id, $pd
     $assistant_responses = $responses[$assistant_id] ?? $responses[1];
     
     // Determinar tipo de resposta baseado na mensagem
-    $message_lower = strtolower($player_message);
-    
-    if (strpos($message_lower, 'investig') !== false || strpos($message_lower, 'procur') !== false) {
-        return $assistant_responses['investigate'];
-    } elseif (strpos($message_lower, 'suspeito') !== false || strpos($message_lower, 'pessoa') !== false) {
-        return $assistant_responses['suspect'];
-    } elseif (strpos($message_lower, 'pista') !== false || strpos($message_lower, 'evidência') !== false) {
-        return $assistant_responses['clue'];
-    }
-    
-    return $assistant_responses['default'];
-}
-?>
+   $keywords = [
+    'investigate' => ['investig', 'procur', 'buscar', 'pesquisar'],
+    'suspect'     => ['suspeito', 'suspeita', 'culpado', 'pessoa', 'envolvido'],
+    'clue'        => ['pista', 'evidência', 'prova', 'dica', 'vestígio'],
+];
 
+$type = 'default';
+
+foreach ($keywords as $key => $terms) {
+    foreach ($terms as $term) {
+        if (strpos($message_lower, $term) !== false) {
+            $type = $key;
+            break 2;
+        }
+    }
+}
+
+return $assistant_responses[$type];
+}
+function getJsonInput() {
+    $input = file_get_contents('php://input');
+    return json_decode($input, true);
+}
+function jsonResponse($data, $status = 200) {
+    http_response_code($status);
+    header('Content-Type: application/json');
+    echo json_encode($data);
+    exit;
+}
+function getDBConnection() {
+    $host = 'localhost';
+    $db = 'digitaldetective';
+    $user = 'root';
+    $pass = '';
+    $charset = 'utf8mb4';
+    $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+}

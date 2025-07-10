@@ -98,12 +98,14 @@ function handleAnalyzeClue() {
         
         if ($weapon_id) {
             // Analisar arma
-            $stmt = $pdo->prepare("
-                SELECT cw.*, a.name, a.description, a.inspection_message, a.type
-                FROM case_weapon cw
-                JOIN arma a ON cw.weapon_id = a.weapon_id
-                WHERE cw.case_id = ? AND cw.weapon_id = ?
-            ");
+                    $stmt = $pdo->prepare("
+            SELECT cw.*, a.name as weapon_name, a.description as weapon_description,
+                a.type as weapon_type, a.murder_weapon, l.name as found_location_name
+            FROM case_weapon cw
+            JOIN arma a ON cw.weapon_id = a.weapon_id
+            LEFT JOIN local l ON cw.found_at_location_id = l.location_id
+            WHERE cw.case_id = ?
+        ");
             $stmt->execute([$progress['case_id'], $weapon_id]);
             $weapon = $stmt->fetch();
             

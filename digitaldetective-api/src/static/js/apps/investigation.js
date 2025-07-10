@@ -312,33 +312,15 @@ const InvestigationApp = {
         }
         
         try {
-            // Load clues and weapons from the main endpoint
-            const response = await API.investigation.getClues(GAME_STATE.caseId);
-            if (response.success) {
-                // Map clues to expected format
-                this.clues = (response.clues || []).map(clue => ({
-                    clue_id: clue.clue_id,
-                    name: clue.clue_name,
-                    type: clue.clue_type,
-                    description: clue.clue_description,
-                    // Include other necessary properties
-                }));
-                
-                // Map weapons to expected format
-                this.weapons = (response.weapons || []).map(weapon => ({
-                    weapon_id: weapon.weapon_id,
-                    name: weapon.weapon_name,
-                    type: weapon.weapon_type,
-                    description: weapon.weapon_description,
-                    // Include other necessary properties
-                }));
-                
-                this.renderCluesList();
-                this.renderWeaponsList();
-            }
-            
-            // Load mock suspects data
+            // Load mock data
+            this.loadMockWeapons();
+            this.loadMockClues();
             this.loadMockSuspects();
+            
+            // Render all lists
+            this.renderWeaponsList();
+            this.renderCluesList();
+            this.renderSuspectsList();
             
         } catch (error) {
             console.error('Error loading investigation data:', error);
@@ -347,51 +329,200 @@ const InvestigationApp = {
         }
     },
     
+    loadMockWeapons() {
+        this.weapons = [
+            {
+                weapon_id: 1,
+                name: 'Estatueta de Bronze',
+                type: 'Contundente',
+                description: 'Pesado prêmio de caça da coleção. Possível arma contundente.',
+                inspection_message: 'A estatueta está limpa, mas há marcas de sangue recentes na base.',
+                is_murder_weapon: false,
+                found_location: 'Salão de Arte',
+                image: 'estatueta.jpg'
+            },
+            {
+                weapon_id: 2,
+                name: 'Veneno de Digitalis',
+                type: 'Outros',
+                description: 'Medicamento cardíaco em dose letal. Encontrado na mala médica.',
+                inspection_message: 'O frasco está quase vazio. Uma dose grande o suficiente para ser fatal.',
+                is_murder_weapon: true,
+                found_location: 'Quarto de Hóspedes',
+                image: 'veneno.jpg'
+            },
+            {
+                weapon_id: 3,
+                name: 'Adaga Antiga',
+                type: 'Branca',
+                description: 'Peça da coleção de armas. Lâmina afiada de 20cm.',
+                inspection_message: 'A lâmina está limpa, mas há vestígios de sangue no cabo.',
+                is_murder_weapon: false,
+                found_location: 'Biblioteca',
+                image: 'adaga.jpg'
+            },
+            {
+                weapon_id: 4,
+                name: 'Corda de Seda',
+                type: 'Outros',
+                description: 'Corda de cortinas pesadas. Pode ter sido usada para estrangulamento.',
+                inspection_message: 'Parece ter sido cortada recentemente, com marcas de força aplicada.',
+                is_murder_weapon: false,
+                found_location: 'Jardim de Inverno',
+                image: 'corda.jpg'
+            },
+            {
+                weapon_id: 5,
+                name: 'Pistola Antiga',
+                type: 'Fogo',
+                description: 'Revólver da coleção. Não disparado recentemente.',
+                inspection_message: 'A arma não foi disparada recentemente, mas está faltando uma bala.',
+                is_murder_weapon: false,
+                found_location: 'Escritório de Lord Blackwood',
+                image: 'pistola.jpg'
+            }
+        ];
+    },
+    
+    loadMockClues() {
+        this.clues = [
+            {
+                clue_id: 1,
+                name: 'Luvas de jardinagem com terra',
+                type: 'Física',
+                description: 'Luvas encontradas no quarto de hóspedes com terra fresca, contradizendo o álibi.',
+                importance: 'Média',
+                is_red_herring: false,
+                inspection_message: 'As luvas têm terra fresca, como se tivessem sido usadas recentemente no jardim.',
+                found_message: 'Encontradas no quarto de hóspedes, mas Helena disse estar no jardim de inverno',
+                image: 'luvas.jpg'
+            },
+            {
+                clue_id: 2,
+                name: 'Documentos sobre dívidas de jogo',
+                type: 'Documental',
+                description: 'Documentos mostrando que Victor Blackwood tinha grandes dívidas com cassinos.',
+                importance: 'Alta',
+                is_red_herring: false,
+                inspection_message: 'Os documentos mostram que Victor Blackwood tinha grandes dívidas com cassinos.',
+                found_message: 'Encontrados escondidos atrás de um quadro na biblioteca',
+                image: 'dividas.jpg'
+            },
+            {
+                clue_id: 3,
+                name: 'Frasco de digitalis quase vazio',
+                type: 'Física',
+                description: 'Frasco de medicamento encontrado na mala médica da Dra. Whitmore.',
+                importance: 'Alta',
+                is_red_herring: false,
+                inspection_message: 'O frasco de medicamento está quase vazio, com apenas alguns resíduos no fundo.',
+                found_message: 'Encontrado na mala médica da Dra. Whitmore',
+                image: 'frasco.jpg'
+            },
+            {
+                clue_id: 4,
+                name: 'Chave mestra do escritório',
+                type: 'Física',
+                description: 'Chave que abre todas as portas da mansão, encontrada com o mordomo.',
+                importance: 'Média',
+                is_red_herring: true,
+                inspection_message: 'James afirma que sempre carrega esta chave para suas funções.',
+                found_message: 'Encontrada no bolso do mordomo',
+                image: 'chave.jpg'
+            },
+            {
+                clue_id: 5,
+                name: 'Carta de demissão não enviada',
+                type: 'Documental',
+                description: 'Carta de demissão datada de ontem, mas não enviada pela secretária.',
+                importance: 'Média',
+                is_red_herring: false,
+                inspection_message: 'A carta está datada de ontem, mas não foi enviada. Isabelle parece relutante em deixar o emprego.',
+                found_message: 'Encontrada na mesa da secretária',
+                image: 'carta.jpg'
+            },
+            {
+                clue_id: 6,
+                name: 'Rascunho do novo testamento',
+                type: 'Documental',
+                description: 'Documento mostrando mudanças significativas na distribuição da herança.',
+                importance: 'Alta',
+                is_red_herring: false,
+                inspection_message: 'O documento mostra mudanças significativas na distribuição da herança.',
+                found_message: 'Encontrado na gaveta do advogado',
+                image: 'testamento.jpg'
+            },
+            {
+                clue_id: 7,
+                name: 'Manchas de cera vermelha',
+                type: 'Física',
+                description: 'Manchas encontradas no corredor do segundo andar.',
+                importance: 'Baixa',
+                is_red_herring: true,
+                inspection_message: 'Provavelmente de velas decorativas, sem relação com o crime.',
+                found_message: 'Encontradas no corredor do segundo andar',
+                image: 'cera.jpg'
+            }
+        ];
+    },
+    
     loadMockSuspects() {
-        // Mock suspects data with corrected property names
         this.suspects = [
             {
                 suspect_id: 1,
                 name: 'Helena Blackwood',
                 relationship_to_victim: 'Esposa da vítima',
-                description: 'Esposa do falecido, herdaria a fortuna.',
-                alibi: 'Estava em casa na noite do crime',
-                motive: 'Herança e problemas conjugais'
+                description: 'Esposa do falecido, herdaria a fortuna. Conhecida por ter um relacionamento conturbado com o marido.',
+                alibi: 'Estava no jardim de inverno lendo',
+                motive: 'Herança e problemas conjugais',
+                image: 'helena.jpg'
             },
             {
                 suspect_id: 2,
                 name: 'Victor Blackwood',
                 relationship_to_victim: 'Filho da vítima',
-                description: 'Filho mais novo com dívidas de jogo',
-                alibi: 'No bar local até tarde',
-                motive: 'Dívidas de jogo e herança'
+                description: 'Filho mais novo com dívidas de jogo. Tinha acesso à mansão e conhecia os hábitos do pai.',
+                alibi: 'Na biblioteca consultando livros',
+                motive: 'Dívidas de jogo e herança',
+                image: 'victor.jpg'
             },
             {
                 suspect_id: 3,
-                name: 'Dr. Sarah Whitmore',
+                name: 'Dr. Margaret Whitmore',
                 relationship_to_victim: 'Médica da família',
-                description: 'Médica particular da família há 10 anos',
-                alibi: 'Plantão no hospital',
-                motive: 'Segredo médico comprometedor'
+                description: 'Médica particular da família há 10 anos. Tinha conhecimento sobre medicamentos e acesso à vítima.',
+                alibi: 'Organizando maleta médica no quarto',
+                motive: 'Edmund descobriu seu esquema de venda de remédios',
+                image: 'margaret.jpg'
             },
             {
                 suspect_id: 4,
-                name: 'James Butler',
+                name: 'James Morton',
                 relationship_to_victim: 'Mordomo da mansão',
-                description: 'Mordomo fiel por 15 anos',
-                alibi: 'Dormindo nos aposentos dos funcionários',
-                motive: 'Descobriu irregularidades financeiras'
+                description: 'Mordomo fiel por 15 anos. Conhecia todos os segredos da família e tinha acesso a todos os cômodos.',
+                alibi: 'Na cozinha preparando chá',
+                motive: 'Edmund descobriu que roubava artefatos',
+                image: 'james.jpg'
             },
             {
                 suspect_id: 5,
-                name: 'Sarah Mitchell',
+                name: 'Isabelle Crane',
                 relationship_to_victim: 'Secretária pessoal',
-                description: 'Secretária pessoal por 3 anos',
-                alibi: 'Em casa com a família',
-                motive: 'Chantagem por informações confidenciais'
+                description: 'Secretária pessoal por 3 anos. Tinha acesso aos documentos e agenda do falecido.',
+                alibi: 'Catalogando peças no salão de arte',
+                motive: 'Rejeição romântica e ameaça de demissão',
+                image: 'isabelle.jpg'
+            },
+            {
+                suspect_id: 6,
+                name: 'Charles Vanderbilt',
+                relationship_to_victim: 'Advogado da família',
+                description: 'Advogado da família Blackwood há 20 anos. Responsável pelo testamento e documentos legais.',
+                alibi: 'Revisando documentos no escritório',
+                motive: 'Edmund descobriu desvio de fundos',
+                image: 'charles.jpg'
             }
         ];
-        this.renderSuspectsList();
     },
     
     showErrorState() {
@@ -442,7 +573,7 @@ const InvestigationApp = {
         const cluesHtml = this.clues.map(clue => `
             <div class="item" data-clue-id="${clue.clue_id}">
                 <div class="item-name">${Utils.escapeHtml(clue.name)}</div>
-                <div class="item-type">${Utils.escapeHtml(clue.type)}</div>
+                <div class="item-type">${Utils.escapeHtml(clue.type)} - ${Utils.escapeHtml(clue.importance)}</div>
             </div>
         `).join('');
         
@@ -566,9 +697,12 @@ const InvestigationApp = {
             <div class="detail-header">
                 <h3>${Utils.escapeHtml(clue.name)}</h3>
                 <div><strong>Tipo:</strong> ${Utils.escapeHtml(clue.type)}</div>
+                <div><strong>Importância:</strong> ${Utils.escapeHtml(clue.importance)}</div>
+                ${clue.is_red_herring ? '<div class="warning-tag">⚠️ PISTA FALSA</div>' : ''}
             </div>
             <div class="detail-content">
-                <p>${Utils.escapeHtml(clue.description)}</p>
+                <p><strong>Descrição:</strong> ${Utils.escapeHtml(clue.description)}</p>
+                <p><strong>Local encontrado:</strong> ${Utils.escapeHtml(clue.found_message)}</p>
                 <button class="btn btn-primary analyze-button" id="analyze-clue-btn">
                     Analisar Pista
                 </button>
@@ -594,9 +728,11 @@ const InvestigationApp = {
             <div class="detail-header">
                 <h3>${Utils.escapeHtml(weapon.name)}</h3>
                 <div><strong>Tipo:</strong> ${Utils.escapeHtml(weapon.type)}</div>
+                ${weapon.found_location ? `<div><strong>Local encontrada:</strong> ${Utils.escapeHtml(weapon.found_location)}</div>` : ''}
             </div>
             <div class="detail-content">
-                <p>${Utils.escapeHtml(weapon.description)}</p>
+                <p><strong>Descrição:</strong> ${Utils.escapeHtml(weapon.description)}</p>
+                <p><strong>Análise:</strong> ${Utils.escapeHtml(weapon.inspection_message)}</p>
                 <button class="btn btn-primary analyze-button" id="analyze-weapon-btn">
                     Analisar Arma
                 </button>
@@ -627,6 +763,7 @@ const InvestigationApp = {
                 <p><strong>Descrição:</strong> ${Utils.escapeHtml(suspect.description)}</p>
                 ${suspect.motive ? `<p><strong>Motivo:</strong> ${Utils.escapeHtml(suspect.motive)}</p>` : ''}
                 ${suspect.alibi ? `<p><strong>Álibi:</strong> ${Utils.escapeHtml(suspect.alibi)}</p>` : ''}
+                ${suspect.image ? `<img src="assets/images/suspects/${suspect.image}" alt="${suspect.name}" class="suspect-image">` : ''}
             </div>
         `;
     },
@@ -635,8 +772,24 @@ const InvestigationApp = {
         if (!GAME_STATE.userId) return;
         
         try {
-            await API.investigation.analyzeClue(GAME_STATE.userId, clueId);
-            // Response handled by event listener
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const clue = this.clues.find(c => c.clue_id === clueId);
+            if (!clue) return;
+            
+            // Simulate analysis result
+            const analysis = {
+                success: true,
+                clue_id: clueId,
+                result: clue.is_red_herring 
+                    ? "Esta pista parece ser irrelevante para o caso." 
+                    : "Esta pista contém informações importantes para a investigação.",
+                new_info: clue.inspection_message
+            };
+            
+            EventBus.emit('analysisComplete', analysis);
+            
         } catch (error) {
             console.error('Error analyzing clue:', error);
             Utils.showNotification('Erro ao analisar pista', 'error');
@@ -647,8 +800,24 @@ const InvestigationApp = {
         if (!GAME_STATE.userId) return;
         
         try {
-            await API.investigation.analyzeWeapon(GAME_STATE.userId, weaponId);
-            // Response handled by event listener
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const weapon = this.weapons.find(w => w.weapon_id === weaponId);
+            if (!weapon) return;
+            
+            // Simulate analysis result
+            const analysis = {
+                success: true,
+                weapon_id: weaponId,
+                result: weapon.is_murder_weapon 
+                    ? "Esta arma foi usada no crime!" 
+                    : "Esta arma não parece ter sido usada no crime.",
+                new_info: weapon.inspection_message
+            };
+            
+            EventBus.emit('analysisComplete', analysis);
+            
         } catch (error) {
             console.error('Error analyzing weapon:', error);
             Utils.showNotification('Erro ao analisar arma', 'error');
@@ -658,7 +827,18 @@ const InvestigationApp = {
     showAnalysisResult(analysis) {
         Utils.showNotification('Análise concluída!', 'success');
         
-        console.log('Analysis result:', analysis);
+        // Update the details view with the analysis result
+        if (analysis.clue_id) {
+            const clue = this.clues.find(c => c.clue_id === analysis.clue_id);
+            if (clue) {
+                this.selectClue(clue);
+            }
+        } else if (analysis.weapon_id) {
+            const weapon = this.weapons.find(w => w.weapon_id === analysis.weapon_id);
+            if (weapon) {
+                this.selectWeapon(weapon);
+            }
+        }
     },
     
     showSolutionForm() {
@@ -715,14 +895,30 @@ const InvestigationApp = {
             return;
         }
 
-        try {
-            const response = await API.game.solve(GAME_STATE.userId, suspectId, weaponId);
-            if (response.success) {
-                APIHandlers.handleCaseSolution(response);
+        if (!weaponId) {
+            Utils.showNotification('Selecione uma arma', 'error');
+            return;
+        }
 
-                // Hide solution form
-                window.element.querySelector('#solution-form').style.display = 'none';
+        try {
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Get the correct solution (in a real app, this would come from the server)
+            const correctWeapon = this.weapons.find(w => w.is_murder_weapon);
+            const correctSuspect = this.suspects[1]; // Victor is the murderer in our mock
+            
+            const isCorrect = suspectId === correctSuspect.suspect_id && weaponId === correctWeapon.weapon_id;
+            
+            if (isCorrect) {
+                Utils.showNotification('Parabéns! Você resolveu o caso!', 'success');
+            } else {
+                Utils.showNotification('Solução incorreta. Continue investigando!', 'error');
             }
+            
+            // Hide solution form
+            window.element.querySelector('#solution-form').style.display = 'none';
+            
         } catch (error) {
             console.error('Error submitting solution:', error);
             Utils.showNotification('Erro ao submeter solução', 'error');

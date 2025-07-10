@@ -258,7 +258,14 @@ const ChatApp = {
         this.showTypingIndicator();
         
         try {
-            const response = await API.chat.sendMessage(GAME_STATE.userId, message, GAME_STATE.assistantId);
+           const response = await API.chat.sendMessage(GAME_STATE.userId, message, GAME_STATE.assistantId);
+
+            if (response.success && response.assistant_response) {
+                EventBus.emit('chatMessageReceived', {
+                    message: response.assistant_response,
+                    timestamp: new Date().toISOString()
+                });
+            }
             // Response will be handled by the event listener
         } catch (error) {
             console.error('Error sending chat message:', error);
@@ -345,4 +352,3 @@ const ChatApp = {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 };
-

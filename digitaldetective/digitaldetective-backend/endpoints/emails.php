@@ -159,39 +159,7 @@ function generateNPCEmailResponse($suspect_id, $player_message, $pdo) {
         return "Desculpe, não posso responder no momento.";
     }
     
-    // Respostas baseadas no estilo do suspeito
-    $responses = [
-        1 => [ // Helena Blackwood (esposa)
-            "Detetive, agradeço sua preocupação. Edmund era um homem complexo...",
-            "Não sei como posso ajudar mais. Estou devastada com essa perda.",
-            "Por favor, encontre quem fez isso com meu marido."
-        ],
-        2 => [ // Victor Blackwood (filho)
-            "Olha, eu sei que pareço suspeito, mas não matei meu pai.",
-            "Sim, eu tinha dívidas, mas isso não me torna um assassino.",
-            "Meu pai e eu tínhamos problemas, mas eu o amava."
-        ],
-        3 => [ // Dr. Whitmore (médica)
-            "Como médica, posso assegurar que fiz tudo para ajudar Edmund.",
-            "Os medicamentos que prescrevi eram necessários para sua condição.",
-            "Qualquer insinuação sobre minha conduta profissional é ofensiva."
-        ],
-        4 => [ // James (mordomo)
-            "Servi esta família por décadas com lealdade absoluta.",
-            "Lord Blackwood confiava em mim completamente.",
-            "Jamais faria mal ao meu patrão."
-        ],
-        5 => [ // Sarah (secretária)
-            "Trabalhei com Lord Blackwood por anos. Era um homem justo.",
-            "Não entendo por que alguém quereria machucá-lo.",
-            "Estou à disposição para qualquer esclarecimento."
-        ],
-        6 => [ // Advogado
-            "Como advogado da família, devo manter certas informações confidenciais.",
-            "Posso apenas dizer que Lord Blackwood era um cliente respeitado.",
-            "Qualquer questão legal deve ser tratada adequadamente."
-        ]
-    ];
+ 
     
     $suspect_responses = $responses[$suspect_id] ?? ["Não posso comentar sobre isso no momento."];
     
