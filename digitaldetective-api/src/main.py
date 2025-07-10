@@ -3,17 +3,8 @@ import sys
 import random
 import time
 import webbrowser
-import os
-
-# Caminho absoluto para o index.html
-file_path = os.path.abspath("./Index.html")  # certifique-se que o nome e caminho estão corretos
-webbrowser.open(f"file://{file_path}")
-# Import necessary libraries
 from datetime import datetime
-# DON'T CHANGE THIS PATH
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, redirect
 from flask_cors import CORS
 import mysql.connector
 from mysql.connector import Error
@@ -43,6 +34,19 @@ def get_db_connection():
 
 # Game state storage (in production, use Redis or database)
 game_sessions = {}
+
+# Rotas para servir as páginas
+@app.route('/landing')
+def serve_landing():
+    return send_from_directory(app.static_folder, 'landing.html')
+
+@app.route('/game')
+def serve_game():
+    return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/')
+def home():
+    return redirect('/landing')
 
 # API Routes
 @app.route('/api/cases', methods=['GET'])
@@ -104,7 +108,6 @@ def start_game():
         cursor.execute("SELECT * FROM casos WHERE case_id = %s", (case_id,))
         case_info = cursor.fetchone()
         
-      
         # Get assistant info
         cursor.execute("SELECT * FROM assistentes WHERE assistente_id = %s", (assistant_id,))
         assistant = cursor.fetchone()
@@ -371,9 +374,6 @@ def send_chat_message():
         assistant = cursor.fetchone()
         
         # Simple response generation based on assistant personality
-        cursor.fetchone()
-        
-        # Simple response generation based on assistant personality
         responses = {
             4: "Dona Lurdes na área. Quer saber a verdade? Eu sei tudo sobre essa gente...",
             5: "Dra. Ice aqui. Analisando o perfil... eles têm padrões comportamentais interessantes."
@@ -544,24 +544,15 @@ def solve_case():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
-def serve(path):
-    static_folder_path = app.static_folder
-    if static_folder_path is None:
-            return "Static folder not configured", 404
-
-    if path != "" and os.path.exists(os.path.join(static_folder_path, path)):
-        return send_from_directory(static_folder_path, path)
+def serve_static(path):
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
     else:
-        index_path = os.path.join(static_folder_path, 'index.html')
-        if os.path.exists(index_path):
-            return send_from_directory(static_folder_path, 'index.html')
-        else:
-            return "index.html not found", 404
-
+        return send_from_directory(app.static_folder, 'index.html')
 
 if __name__ == '__main__':
-    # Mostra a URL para acesso manual
+    # Abre o navegador automaticamente na landing page
+    webbrowser.open("http://localhost:5000/landing")
     print(f"Servidor rodando em: http://localhost:5000")
     app.run(host='0.0.0.0', port=5000, debug=True)
