@@ -280,7 +280,23 @@ const InvestigationApp = {
         if (!invWindow) return;
         
         const windowElement = invWindow.element;
-        
+
+        // Remove previous listeners by cloning nodes (prevents duplicate listeners)
+        windowElement.querySelectorAll('.tab-header').forEach(header => {
+            const newHeader = header.cloneNode(true);
+            header.parentNode.replaceChild(newHeader, header);
+        });
+        const refreshBtn = windowElement.querySelector('#refresh-investigation');
+        if (refreshBtn) {
+            const newRefreshBtn = refreshBtn.cloneNode(true);
+            refreshBtn.parentNode.replaceChild(newRefreshBtn, refreshBtn);
+        }
+        const solveBtn = windowElement.querySelector('#solve-case');
+        if (solveBtn) {
+            const newSolveBtn = solveBtn.cloneNode(true);
+            solveBtn.parentNode.replaceChild(newSolveBtn, solveBtn);
+        }
+
         // Tab switching
         windowElement.querySelectorAll('.tab-header').forEach(header => {
             header.addEventListener('click', (event) => {
@@ -290,240 +306,122 @@ const InvestigationApp = {
         });
 
         // Refresh button
-        windowElement.querySelector('#refresh-investigation').addEventListener('click', () => {
-            InvestigationApp.loadInvestigationData();
-        });
+        const refreshButton = windowElement.querySelector('#refresh-investigation');
+        if (refreshButton) {
+            refreshButton.addEventListener('click', () => {
+                InvestigationApp.loadInvestigationData();
+            });
+        }
 
         // Solve case button
-        windowElement.querySelector('#solve-case').addEventListener('click', () => {
-            InvestigationApp.showSolutionForm();
-        });
+        const solveCaseButton = windowElement.querySelector('#solve-case');
+        if (solveCaseButton) {
+            solveCaseButton.addEventListener('click', () => {
+                InvestigationApp.showSolutionForm();
+            });
+        }
 
-        // Listen for analysis results
-        EventBus.on('analysisComplete', (analysis) => {
-            this.showAnalysisResult(analysis);
-        });
+        // Listen for analysis results (register only once)
+        if (!this._analysisListenerRegistered) {
+            EventBus.on('analysisComplete', (analysis) => {
+                this.showAnalysisResult(analysis);
+            });
+            this._analysisListenerRegistered = true;
+        }
     },
     
-    async loadInvestigationData() {
-        if (!GAME_STATE.caseId) {
-            Utils.showNotification('Caso não carregado', 'error');
-            return;
+async loadInvestigationData() {
+    if (!GAME_STATE.caseId) {
+        Utils.showNotification('Caso não carregado', 'error');
+        return;
+    }
+    
+    try {
+        // Load data from API
+        await Promise.all([
+            this.loadWeaponsFromDB(),
+            this.loadCluesFromDB(),
+            this.loadSuspectsFromDB()
+        ]);
+        
+        // Render all lists
+        this.renderWeaponsList();
+        this.renderCluesList();
+        this.renderSuspectsList();
+        
+    } catch (error) {
+        console.error('Error loading investigation data:', error);
+        Utils.showNotification('Erro ao carregar dados da investigação', 'error');
+        this.showErrorState();
+    }
+},
+
+async loadWeaponsFromDB() {
+    try {
+        const data = await API.request(`/investigation/weapons/${GAME_STATE.caseId}`);
+        this.weapons = data.weapons;
+        return true;
+        
+    } catch (error) {
+        console.error('Error loading weapons:', error);
+        
+        const invWindow = WindowManager.getWindow('investigation');
+        if (invWindow) {
+            invWindow.element.querySelector('#weapons-list').innerHTML = `
+                <div class="error-message">
+                    Erro ao carregar armas: ${Utils.escapeHtml(error.message)}<br>
+                    <button onclick="InvestigationApp.loadWeaponsFromDB()">Tentar novamente</button>
+                </div>
+            `;
         }
         
-        try {
-            // Load mock data
-            this.loadMockWeapons();
-            this.loadMockClues();
-            this.loadMockSuspects();
-            
-            // Render all lists
-            this.renderWeaponsList();
-            this.renderCluesList();
-            this.renderSuspectsList();
-            
-        } catch (error) {
-            console.error('Error loading investigation data:', error);
-            Utils.showNotification('Erro ao carregar dados da investigação', 'error');
-            this.showErrorState();
+        throw error;
+    }
+},
+
+async loadCluesFromDB() {
+    try {
+        const data = await API.request(`/investigation/clues/${GAME_STATE.caseId}`);
+        this.clues = data.clues;
+        return true;
+    } catch (error) {
+        console.error('Error loading clues:', error);
+        
+        const invWindow = WindowManager.getWindow('investigation');
+        if (invWindow) {
+            invWindow.element.querySelector('#clues-list').innerHTML = `
+                <div class="error-message">
+                    Erro ao carregar pistas<br>
+                    <button onclick="InvestigationApp.loadCluesFromDB()">Tentar novamente</button>
+                </div>
+            `;
         }
-    },
-    
-    loadMockWeapons() {
-        this.weapons = [
-            {
-                weapon_id: 1,
-                name: 'Estatueta de Bronze',
-                type: 'Contundente',
-                description: 'Pesado prêmio de caça da coleção. Possível arma contundente.',
-                inspection_message: 'A estatueta está limpa, mas há marcas de sangue recentes na base.',
-                is_murder_weapon: false,
-                found_location: 'Salão de Arte',
-                image: 'estatueta.jpg'
-            },
-            {
-                weapon_id: 2,
-                name: 'Veneno de Digitalis',
-                type: 'Outros',
-                description: 'Medicamento cardíaco em dose letal. Encontrado na mala médica.',
-                inspection_message: 'O frasco está quase vazio. Uma dose grande o suficiente para ser fatal.',
-                is_murder_weapon: true,
-                found_location: 'Quarto de Hóspedes',
-                image: 'veneno.jpg'
-            },
-            {
-                weapon_id: 3,
-                name: 'Adaga Antiga',
-                type: 'Branca',
-                description: 'Peça da coleção de armas. Lâmina afiada de 20cm.',
-                inspection_message: 'A lâmina está limpa, mas há vestígios de sangue no cabo.',
-                is_murder_weapon: false,
-                found_location: 'Biblioteca',
-                image: 'adaga.jpg'
-            },
-            {
-                weapon_id: 4,
-                name: 'Corda de Seda',
-                type: 'Outros',
-                description: 'Corda de cortinas pesadas. Pode ter sido usada para estrangulamento.',
-                inspection_message: 'Parece ter sido cortada recentemente, com marcas de força aplicada.',
-                is_murder_weapon: false,
-                found_location: 'Jardim de Inverno',
-                image: 'corda.jpg'
-            },
-            {
-                weapon_id: 5,
-                name: 'Pistola Antiga',
-                type: 'Fogo',
-                description: 'Revólver da coleção. Não disparado recentemente.',
-                inspection_message: 'A arma não foi disparada recentemente, mas está faltando uma bala.',
-                is_murder_weapon: false,
-                found_location: 'Escritório de Lord Blackwood',
-                image: 'pistola.jpg'
-            }
-        ];
-    },
-    
-    loadMockClues() {
-        this.clues = [
-            {
-                clue_id: 1,
-                name: 'Luvas de jardinagem com terra',
-                type: 'Física',
-                description: 'Luvas encontradas no quarto de hóspedes com terra fresca, contradizendo o álibi.',
-                importance: 'Média',
-                is_red_herring: false,
-                inspection_message: 'As luvas têm terra fresca, como se tivessem sido usadas recentemente no jardim.',
-                found_message: 'Encontradas no quarto de hóspedes, mas Helena disse estar no jardim de inverno',
-                image: 'luvas.jpg'
-            },
-            {
-                clue_id: 2,
-                name: 'Documentos sobre dívidas de jogo',
-                type: 'Documental',
-                description: 'Documentos mostrando que Victor Blackwood tinha grandes dívidas com cassinos.',
-                importance: 'Alta',
-                is_red_herring: false,
-                inspection_message: 'Os documentos mostram que Victor Blackwood tinha grandes dívidas com cassinos.',
-                found_message: 'Encontrados escondidos atrás de um quadro na biblioteca',
-                image: 'dividas.jpg'
-            },
-            {
-                clue_id: 3,
-                name: 'Frasco de digitalis quase vazio',
-                type: 'Física',
-                description: 'Frasco de medicamento encontrado na mala médica da Dra. Whitmore.',
-                importance: 'Alta',
-                is_red_herring: false,
-                inspection_message: 'O frasco de medicamento está quase vazio, com apenas alguns resíduos no fundo.',
-                found_message: 'Encontrado na mala médica da Dra. Whitmore',
-                image: 'frasco.jpg'
-            },
-            {
-                clue_id: 4,
-                name: 'Chave mestra do escritório',
-                type: 'Física',
-                description: 'Chave que abre todas as portas da mansão, encontrada com o mordomo.',
-                importance: 'Média',
-                is_red_herring: true,
-                inspection_message: 'James afirma que sempre carrega esta chave para suas funções.',
-                found_message: 'Encontrada no bolso do mordomo',
-                image: 'chave.jpg'
-            },
-            {
-                clue_id: 5,
-                name: 'Carta de demissão não enviada',
-                type: 'Documental',
-                description: 'Carta de demissão datada de ontem, mas não enviada pela secretária.',
-                importance: 'Média',
-                is_red_herring: false,
-                inspection_message: 'A carta está datada de ontem, mas não foi enviada. Isabelle parece relutante em deixar o emprego.',
-                found_message: 'Encontrada na mesa da secretária',
-                image: 'carta.jpg'
-            },
-            {
-                clue_id: 6,
-                name: 'Rascunho do novo testamento',
-                type: 'Documental',
-                description: 'Documento mostrando mudanças significativas na distribuição da herança.',
-                importance: 'Alta',
-                is_red_herring: false,
-                inspection_message: 'O documento mostra mudanças significativas na distribuição da herança.',
-                found_message: 'Encontrado na gaveta do advogado',
-                image: 'testamento.jpg'
-            },
-            {
-                clue_id: 7,
-                name: 'Manchas de cera vermelha',
-                type: 'Física',
-                description: 'Manchas encontradas no corredor do segundo andar.',
-                importance: 'Baixa',
-                is_red_herring: true,
-                inspection_message: 'Provavelmente de velas decorativas, sem relação com o crime.',
-                found_message: 'Encontradas no corredor do segundo andar',
-                image: 'cera.jpg'
-            }
-        ];
-    },
-    
-    loadMockSuspects() {
-        this.suspects = [
-            {
-                suspect_id: 1,
-                name: 'Helena Blackwood',
-                relationship_to_victim: 'Esposa da vítima',
-                description: 'Esposa do falecido, herdaria a fortuna. Conhecida por ter um relacionamento conturbado com o marido.',
-                alibi: 'Estava no jardim de inverno lendo',
-                motive: 'Herança e problemas conjugais',
-                image: 'helena.jpg'
-            },
-            {
-                suspect_id: 2,
-                name: 'Victor Blackwood',
-                relationship_to_victim: 'Filho da vítima',
-                description: 'Filho mais novo com dívidas de jogo. Tinha acesso à mansão e conhecia os hábitos do pai.',
-                alibi: 'Na biblioteca consultando livros',
-                motive: 'Dívidas de jogo e herança',
-                image: 'victor.jpg'
-            },
-            {
-                suspect_id: 3,
-                name: 'Dr. Margaret Whitmore',
-                relationship_to_victim: 'Médica da família',
-                description: 'Médica particular da família há 10 anos. Tinha conhecimento sobre medicamentos e acesso à vítima.',
-                alibi: 'Organizando maleta médica no quarto',
-                motive: 'Edmund descobriu seu esquema de venda de remédios',
-                image: 'margaret.jpg'
-            },
-            {
-                suspect_id: 4,
-                name: 'James Morton',
-                relationship_to_victim: 'Mordomo da mansão',
-                description: 'Mordomo fiel por 15 anos. Conhecia todos os segredos da família e tinha acesso a todos os cômodos.',
-                alibi: 'Na cozinha preparando chá',
-                motive: 'Edmund descobriu que roubava artefatos',
-                image: 'james.jpg'
-            },
-            {
-                suspect_id: 5,
-                name: 'Isabelle Crane',
-                relationship_to_victim: 'Secretária pessoal',
-                description: 'Secretária pessoal por 3 anos. Tinha acesso aos documentos e agenda do falecido.',
-                alibi: 'Catalogando peças no salão de arte',
-                motive: 'Rejeição romântica e ameaça de demissão',
-                image: 'isabelle.jpg'
-            },
-            {
-                suspect_id: 6,
-                name: 'Charles Vanderbilt',
-                relationship_to_victim: 'Advogado da família',
-                description: 'Advogado da família Blackwood há 20 anos. Responsável pelo testamento e documentos legais.',
-                alibi: 'Revisando documentos no escritório',
-                motive: 'Edmund descobriu desvio de fundos',
-                image: 'charles.jpg'
-            }
-        ];
-    },
+        
+        throw error;
+    }
+},
+
+async loadSuspectsFromDB() {
+    try {
+        const data = await API.request(`/suspects/${GAME_STATE.caseId}`);
+        this.suspects = data.suspects;
+        return true;
+    } catch (error) {
+        console.error('Error loading suspects:', error);
+        
+        const invWindow = WindowManager.getWindow('investigation');
+        if (invWindow) {
+            invWindow.element.querySelector('#suspects-list').innerHTML = `
+                <div class="error-message">
+                    Erro ao carregar suspeitos<br>
+                    <button onclick="InvestigationApp.loadSuspectsFromDB()">Tentar novamente</button>
+                </div>
+            `;
+        }
+        
+        throw error;
+    }
+},
     
     showErrorState() {
         const window = WindowManager.getWindow('investigation');
@@ -772,22 +670,23 @@ const InvestigationApp = {
         if (!GAME_STATE.userId) return;
         
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            const response = await fetch('/api/analyze-clue', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${GAME_STATE.authToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user_id: GAME_STATE.userId,
+                    clue_id: clueId
+                })
+            });
             
-            const clue = this.clues.find(c => c.clue_id === clueId);
-            if (!clue) return;
+            if (!response.ok) {
+                throw new Error('Failed to analyze clue');
+            }
             
-            // Simulate analysis result
-            const analysis = {
-                success: true,
-                clue_id: clueId,
-                result: clue.is_red_herring 
-                    ? "Esta pista parece ser irrelevante para o caso." 
-                    : "Esta pista contém informações importantes para a investigação.",
-                new_info: clue.inspection_message
-            };
-            
+            const analysis = await response.json();
             EventBus.emit('analysisComplete', analysis);
             
         } catch (error) {
@@ -800,22 +699,23 @@ const InvestigationApp = {
         if (!GAME_STATE.userId) return;
         
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            const response = await fetch('/api/analyze-weapon', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${GAME_STATE.authToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user_id: GAME_STATE.userId,
+                    weapon_id: weaponId
+                })
+            });
             
-            const weapon = this.weapons.find(w => w.weapon_id === weaponId);
-            if (!weapon) return;
+            if (!response.ok) {
+                throw new Error('Failed to analyze weapon');
+            }
             
-            // Simulate analysis result
-            const analysis = {
-                success: true,
-                weapon_id: weaponId,
-                result: weapon.is_murder_weapon 
-                    ? "Esta arma foi usada no crime!" 
-                    : "Esta arma não parece ter sido usada no crime.",
-                new_info: weapon.inspection_message
-            };
-            
+            const analysis = await response.json();
             EventBus.emit('analysisComplete', analysis);
             
         } catch (error) {
@@ -890,30 +790,37 @@ const InvestigationApp = {
         const suspectId = parseInt(window.element.querySelector('#suspect-select').value);
         const weaponId = parseInt(window.element.querySelector('#weapon-select').value);
 
-        if (!suspectId) {
-            Utils.showNotification('Selecione um suspeito', 'error');
-            return;
-        }
-
-        if (!weaponId) {
-            Utils.showNotification('Selecione uma arma', 'error');
+        if (!suspectId || !weaponId) {
+            Utils.showNotification('Selecione um suspeito e uma arma', 'error');
             return;
         }
 
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            const response = await fetch('/api/submit-solution', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${GAME_STATE.authToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user_id: GAME_STATE.userId,
+                    case_id: GAME_STATE.caseId,
+                    suspect_id: suspectId,
+                    weapon_id: weaponId
+                })
+            });
             
-            // Get the correct solution (in a real app, this would come from the server)
-            const correctWeapon = this.weapons.find(w => w.is_murder_weapon);
-            const correctSuspect = this.suspects[1]; // Victor is the murderer in our mock
+            if (!response.ok) {
+                throw new Error('Failed to submit solution');
+            }
             
-            const isCorrect = suspectId === correctSuspect.suspect_id && weaponId === correctWeapon.weapon_id;
+            const result = await response.json();
             
-            if (isCorrect) {
-                Utils.showNotification('Parabéns! Você resolveu o caso!', 'success');
-            } else {
-                Utils.showNotification('Solução incorreta. Continue investigando!', 'error');
+            Utils.showNotification(result.message, result.is_correct ? 'success' : 'error');
+            
+            if (result.is_correct) {
+                // Update game state if needed
+                GAME_STATE.caseCompleted = true;
             }
             
             // Hide solution form

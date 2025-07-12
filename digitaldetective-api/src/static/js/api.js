@@ -1,35 +1,61 @@
 // Digital Detective - API Module
 const API = {
-    // Base request function
+    // Base request function - Versão corrigida
     async request(endpoint, options = {}) {
-    const url = `${CONFIG.API_BASE_URL}${endpoint}`;
-    const defaultOptions = {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    };
-    const finalOptions = { ...defaultOptions, ...options };
+        const url = `${CONFIG.API_BASE_URL}${endpoint}`;
+        
+        // Configuração padrão com headers de autenticação
+        const defaultOptions = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${GAME_STATE.authToken || ''}`
+            },
+            credentials: 'include' // Para cookies de sessão
+        };
+        
+        const finalOptions = {
+            ...defaultOptions,
+            ...options,
+            headers: {
+                ...defaultOptions.headers,
+                ...(options.headers || {})
+            }
+        };
 
-    try {
-        const response = await fetch(url, finalOptions);
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-            const text = await response.text();
-            throw new Error(`Resposta não JSON: ${text.substring(0, 200)}`);
+        try {
+            const response = await fetch(url, finalOptions);
+            
+            // Verificar se a resposta é JSON
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                const text = await response.text();
+                console.error('Resposta não-JSON:', text.substring(0, 200));
+                throw new Error(`O servidor retornou um formato inválido (esperado JSON)`);
+            }
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || `Erro HTTP ${response.status}`);
+            }
+
+            return data;
+        } catch (error) {
+            console.error(`API request failed (${endpoint}):`, error);
+            
+            // Mostrar mensagem mais amigável para o usuário
+            let message = CONFIG.MESSAGES.CONNECTION_ERROR;
+            if (error.message.includes('servidor retornou')) {
+                message = 'Erro no formato da resposta do servidor';
+            } else if (error.message.includes('HTTP')) {
+                message = `Erro de comunicação (${error.message})`;
+            }
+            
+            Utils.showNotification(message, 'error');
+            throw error;
         }
-        const data = await response.json();
+    },
 
-        if (!response.ok) {
-            throw new Error(data.error || `HTTP error! status: ${response.status}`);
-        }
-
-        return data;
-    } catch (error) {
-        console.error('API request failed:', error);
-        Utils.showNotification(CONFIG.MESSAGES.CONNECTION_ERROR, 'error');
-        throw error;
-    }
-},
     
     // Game endpoints
     game: {

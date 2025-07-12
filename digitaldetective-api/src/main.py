@@ -1,8 +1,8 @@
 import os
-import sys
 import random
 import time
 import webbrowser
+import threading
 from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory, redirect
 from flask_cors import CORS
@@ -267,36 +267,42 @@ def analyze_evidence():
 @app.route('/api/emails/<int:user_id>', methods=['GET'])
 def get_emails(user_id):
     try:
-        if user_id not in game_sessions:
-            return jsonify({'error': 'Game session not found'}), 404
+        connection = get_db_connection()
+        if not connection:
+            return jsonify({'error': 'Database connection failed'}), 500
         
-        # Simulate receiving emails based on game progress
-        session = game_sessions[user_id]
-        # Generate initial emails if none exist
-        if not session['emails']:
-            initial_emails = [
-                {
-                    'id': 1,
-                    'from': 'Delegado Silva',
-                    'subject': 'Caso Blackwood - Informações Iniciais',
-                    'content': 'Detetive, o caso da Mansão Blackwood é complexo. Edmund foi encontrado morto em seu escritório. Todos os suspeitos estão na mansão devido à tempestade.',
-                    'timestamp': datetime.now().isoformat(),
-                    'read': False
-                },
-                {
-                    'id': 2,
-                    'from': 'Forense',
-                    'subject': 'Relatório Preliminar',
-                    'content': 'Causa da morte ainda não determinada. Várias armas encontradas na cena. Aguardando análise mais detalhada.',
-                    'timestamp': datetime.now().isoformat(),
-                    'read': False
-                }
-            ]
-            session['emails'].extend(initial_emails)
+        cursor = connection.cursor(dictionary=True)
+        
+        # Busca e-mails recebidos pelo usuário
+        cursor.execute("""
+            SELECT 
+                e.email_id as id,
+                CASE 
+                    WHEN e.sender_id IS NULL THEN 'Sistema'
+                    WHEN e.sender_id = %s THEN 'Você'
+                    ELSE s.name 
+                END as sender,
+                e.subject,
+                e.content,
+                e.sent_time as timestamp,
+                ue.`is_read` as `read`, 
+                IF(e.sender_id = %s, 1, 0) as sent,
+                e.sender_id
+            FROM emails e
+            LEFT JOIN user_emails ue ON e.email_id = ue.email_id AND ue.user_id = %s
+            LEFT JOIN suspeitos s ON e.sender_id = s.suspect_id
+            WHERE ue.user_id = %s OR e.sender_id = %s
+            ORDER BY e.sent_time DESC
+        """, (user_id, user_id, user_id, user_id, user_id))
+        
+        emails = cursor.fetchall()
+        
+        cursor.close()
+        connection.close()
         
         return jsonify({
             'success': True,
-            'emails': session['emails']
+            'emails': emails
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -306,43 +312,113 @@ def send_email():
     try:
         data = request.get_json()
         user_id = data.get('user_id')
-        recipient = data.get('recipient_id')
+        recipient_id = data.get('recipient_id')
         subject = data.get('subject')
         content = data.get('content')
         
-        if user_id not in game_sessions:
-            return jsonify({'error': 'Game session not found'}), 404
+        if not all([user_id, recipient_id, subject, content]):
+            return jsonify({'error': 'Missing required fields'}), 400
         
-        # Add email to sent items
-        email = {
-            'id': len(game_sessions[user_id]['emails']) + 1,
-            'from': 'Você',
-            'to': recipient,
-            'subject': subject,
-            'content': content,
-            'timestamp': datetime.now().isoformat(),
-            'read': True,
-            'sent': True
-        }
+        connection = get_db_connection()
+        if not connection:
+            return jsonify({'error': 'Database connection failed'}), 500
         
-        game_sessions[user_id]['emails'].append(email)
+        cursor = connection.cursor(dictionary=True)
         
-        # Simulate response after delay
-        def generate_response():
-            time.sleep(random.randint(30, 120))  # 30-120 seconds delay
-            response_email = {
-                'id': len(game_sessions[user_id]['emails']) + 1,
-                'from': recipient,
-                'subject': f'Re: {subject}',
-                'content': 'Resposta automática simulada baseada no conteúdo enviado.',
-                'timestamp': datetime.now().isoformat(),
-                'read': False
-            }
-            game_sessions[user_id]['emails'].append(response_email)
+        # Insere o e-mail na tabela emails
+        cursor.execute("""
+            INSERT INTO emails (case_id, sender_id, subject, content, sent_time)
+            VALUES (%s, %s, %s, %s, NOW())
+        """, (1, user_id, subject, content))
         
-        # In production, use a task queue like Celery
-        import threading
-        threading.Thread(target=generate_response).start()
+        email_id = cursor.lastrowid
+        
+        # Registra o e-mail enviado pelo usuário
+        cursor.execute("""
+            INSERT INTO user_emails (user_id, case_id, email_id, is_read, received_at)
+            VALUES (%s, %s, %s, 1, NOW())
+        """, (user_id, 1, email_id))
+        
+        # Registra o e-mail para o destinatário (se for um NPC)
+        if recipient_id != user_id:
+            cursor.execute("""
+                INSERT INTO user_emails (user_id, case_id, email_id, is_read, received_at)
+                VALUES (%s, %s, %s, 0, NOW())
+            """, (recipient_id, 1, email_id))
+        
+        connection.commit()
+        
+        # Simula resposta automática se for um NPC
+        if recipient_id != user_id:
+            def generate_response():
+                time.sleep(random.randint(5, 15))
+                
+                conn = get_db_connection()
+                if conn:
+                    try:
+                        c = conn.cursor(dictionary=True)
+                        
+                        # Cria resposta automática
+                        c.execute("SELECT name FROM suspeitos WHERE suspect_id = %s", (recipient_id,))
+                        sender_name = c.fetchone()['name']
+                        
+                        response_content = f"De {sender_name}:\n\nObrigado pela sua mensagem. {random.choice(['Estou analisando sua solicitação.', 'Preciso verificar alguns detalhes antes de responder completamente.', 'Vou providenciar uma resposta mais completa em breve.'])}"
+                        
+                        c.execute("""
+                            INSERT INTO emails (case_id, sender_id, subject, content, sent_time)
+                            VALUES (%s, %s, %s, %s, NOW())
+                        """, (1, recipient_id, f"Re: {subject}", response_content))
+                        
+                        reply_id = c.lastrowid
+                        
+                        # Associa resposta ao usuário
+                        c.execute("""
+                            INSERT INTO user_emails (user_id, case_id, email_id, is_read, received_at)
+                            VALUES (%s, %s, %s, 0, NOW())
+                        """, (user_id, 1, reply_id))
+                        
+                        conn.commit()
+                        c.close()
+                    except Exception as e:
+                        print(f"Error generating email response: {e}")
+                    finally:
+                        conn.close()
+            
+            threading.Thread(target=generate_response).start()
+        
+        cursor.close()
+        connection.close()
+        
+        return jsonify({'success': True, 'email_id': email_id})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/emails/mark-read', methods=['POST'])
+def mark_email_read():
+    try:
+        data = request.get_json()
+        user_id = data.get('user_id')
+        email_id = data.get('email_id')
+        
+        if not all([user_id, email_id]):
+            return jsonify({'error': 'Missing required fields'}), 400
+        
+        connection = get_db_connection()
+        if not connection:
+            return jsonify({'error': 'Database connection failed'}), 500
+        
+        cursor = connection.cursor()
+        
+        # Marca e-mail como lido
+        cursor.execute("""
+            UPDATE user_emails 
+            SET is_read = 1 
+            WHERE user_id = %s AND email_id = %s
+        """, (user_id, email_id))
+        
+        connection.commit()
+        cursor.close()
+        connection.close()
         
         return jsonify({'success': True})
     except Exception as e:
@@ -371,12 +447,14 @@ def send_chat_message():
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
         cursor.execute("SELECT * FROM assistentes WHERE assistente_id = %s", (assistant_id,))
-        assistant = cursor.fetchone()
         
         # Simple response generation based on assistant personality
         responses = {
-            4: "Dona Lurdes na área. Quer saber a verdade? Eu sei tudo sobre essa gente...",
-            5: "Dra. Ice aqui. Analisando o perfil... eles têm padrões comportamentais interessantes."
+            1: "Deixa comigo, tenho contatos que podem ajudar... por um preço.",
+            2: "Vou tentar entender o lado humano dessa história...",
+            3: "Hackear sistemas? Relaxa, já fiz coisa pior.",
+            4: "Quer saber a verdade? Eu sei tudo sobre essa gente...",
+            5: "Analisando o perfil... eles têm padrões comportamentais interessantes."
         }
         
         assistant_response = responses.get(assistant_id, "Assistente não disponível no momento.")
@@ -415,25 +493,53 @@ def get_chat_history(user_id):
 @app.route('/api/news/<int:case_id>', methods=['GET'])
 def get_news(case_id):
     try:
-        # Generate dynamic news based on case progress
-        news_items = [
-            {
-                'id': 1,
-                'headline': 'Tempestade Isola Mansão Blackwood',
-                'content': 'Uma forte tempestade isolou a Mansão Blackwood na noite do crime, impedindo a saída de qualquer pessoa.',
-                'timestamp': datetime.now().isoformat()
-            },
-            {
-                'id': 2,
-                'headline': 'Morte Misteriosa na Alta Sociedade',
-                'content': 'Edmund Blackwood, conhecido colecionador, foi encontrado morto em circunstâncias misteriosas.',
-                'timestamp': datetime.now().isoformat()
-            }
-        ]
+        connection = get_db_connection()
+        if not connection:
+            return jsonify({'error': 'Database connection failed'}), 500
+        
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT * FROM noticias 
+            WHERE case_id = %s
+            ORDER BY publish_date DESC
+        """, (case_id,))
+        
+        news_items = cursor.fetchall()
+        
+        # Se não houver notícias, retorna algumas padrão
+        if not news_items:
+            news_items = [
+                {
+                    'news_id': 1,
+                    'title': 'Tempestade Isola Mansão Blackwood',
+                    'content': 'Uma forte tempestade isolou a Mansão Blackwood na noite do crime, impedindo a saída de qualquer pessoa.',
+                    'publish_date': datetime.now()
+                },
+                {
+                    'news_id': 2,
+                    'title': 'Morte Misteriosa na Alta Sociedade',
+                    'content': 'Edmund Blackwood, conhecido colecionador, foi encontrado morto em circunstâncias misteriosas.',
+                    'publish_date': datetime.now()
+                }
+            ]
+        
+        # Formata as notícias
+        formatted_news = []
+        for news in news_items:
+            formatted_news.append({
+                'id': news['news_id'],
+                'headline': news['title'],
+                'content': news['content'],
+                'timestamp': news['publish_date'].isoformat() if isinstance(news['publish_date'], datetime) else datetime.now().isoformat(),
+                'image': news.get('image', None)
+            })
+        
+        cursor.close()
+        connection.close()
         
         return jsonify({
             'success': True,
-            'news': news_items
+            'news': formatted_news
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -540,6 +646,51 @@ def solve_case():
                 'suspect_id': suspect_id,
                 'weapon_id': weapon_id
             }
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/investigation/weapons/<int:case_id>', methods=['GET'])
+def get_case_weapons(case_id):
+    try:
+        connection = get_db_connection()
+        if not connection:
+            return jsonify({'error': 'Database connection failed'}), 500
+        
+        cursor = connection.cursor(dictionary=True)
+        
+        # Query para obter as armas do caso com informações adicionais
+        query = """
+        SELECT 
+            a.weapon_id,
+            a.name,
+            a.type,
+            a.description,
+            a.inspection_message,
+            a.image,
+            cw.found_at_location_id,
+            cw.is_hidden,
+            cw.murder_weapon,
+            l.name as location_name
+        FROM 
+            arma a
+        JOIN 
+            case_weapon cw ON a.weapon_id = cw.weapon_id
+        LEFT JOIN 
+            local l ON cw.found_at_location_id = l.location_id
+        WHERE 
+            cw.case_id = %s
+        """
+        
+        cursor.execute(query, (case_id,))
+        weapons = cursor.fetchall()
+        
+        cursor.close()
+        connection.close()
+        
+        return jsonify({
+            'success': True,
+            'weapons': weapons
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500

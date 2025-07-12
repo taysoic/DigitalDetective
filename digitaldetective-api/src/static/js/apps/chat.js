@@ -1,4 +1,4 @@
-// Digital Detective - Chat Application
+
 const ChatApp = {
     chatHistory: [],
     isTyping: false,

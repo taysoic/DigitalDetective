@@ -1,0 +1,14 @@
+# Ativa o motor de reescrita de URL
+RewriteEngine On
+
+# Define a base para o redirecionamento
+# Se o seu projeto estiver em um subdiretório (ex: localhost/meu-jogo/),
+# mude esta linha para: RewriteBase /meu-jogo/digitaldetective-backend/
+RewriteBase /
+
+# Não aplica a regra para arquivos ou diretórios que realmente existem
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redireciona todas as outras requisições para o index.php
+RewriteRule . index.php [L]
